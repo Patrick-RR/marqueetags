@@ -1,0 +1,182 @@
+{
+	"Name": "[mqtv4] Marqueetags 4",
+	"Description": "[@drachenfruchl]\n\n",
+	"LoadPriority": 111666111,
+	"Version": "4.0.0",
+	"Scripts": [
+		{
+			"Path": "mqt.nut",
+			"RunOn": "CLIENT && MP",
+			"ClientCallback": {
+				"After": "mqt_Init"
+			}
+		},
+		{
+			"Path": "mqtSettings.nut",
+			"RunOn": "UI",
+			"UICallback": {
+				"Before": "mqtSettings_Init"
+			}
+		}
+	],
+	"ConVars": [
+		{
+			"Name": "cv_mqtv4_enabled",
+			"DefaultValue": "1",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_mode",
+			"DefaultValue": "0",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_activePreset",
+			"DefaultValue": "",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_networkID_owned",
+			"DefaultValue": "",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_networkID_invisible",
+			"DefaultValue": "",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_syncToPartyLeader",
+			"DefaultValue": "0",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_useChatPreset",
+			"DefaultValue": "0",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_chatPreset",
+			"DefaultValue": "",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_useEOGPreset",
+			"DefaultValue": "0",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_EOGPreset",
+			"DefaultValue": "",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_input_static",
+			"DefaultValue": "",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_input_marquee",
+			"DefaultValue": "",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_delay_marquee",
+			"DefaultValue": "1.0",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_taglength_marquee",
+			"DefaultValue": "4",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_reverse_marquee",
+			"DefaultValue": "0",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_input_full",
+			"DefaultValue": "",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_delay_full",
+			"DefaultValue": "1.0",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_taglength_full",
+			"DefaultValue": "4",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_auto_full",
+			"DefaultValue": "1",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_input_copy",
+			"DefaultValue": "",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_clock_offset",
+			"DefaultValue": "0",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_ping_refreshrate",
+			"DefaultValue": "1.0",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_ping_useSuffix",
+			"DefaultValue": "0",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_input_stat",
+			"DefaultValue": "",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_stat_toTrack",
+			"DefaultValue": "0",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_preset_top1",
+			"DefaultValue": "",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_preset_top2",
+			"DefaultValue": "",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_preset_top3",
+			"DefaultValue": "",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_preset_top4",
+			"DefaultValue": "",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_preset_top5",
+			"DefaultValue": "",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_preset_top6",
+			"DefaultValue": "",
+			"Flags": 16777216
+		}
+	],
+	"Dependencies": {
+		"HAS_TOOLS": "drachenfruchl.tools"
+	}
+}
