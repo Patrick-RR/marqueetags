@@ -26,11 +26,6 @@
 			"Flags": 16777216
 		},
 		{
-			"Name": "cv_mqtv4_mode",
-			"DefaultValue": "0",
-			"Flags": 16777216
-		},
-		{
 			"Name": "cv_mqtv4_activePreset",
 			"DefaultValue": "",
 			"Flags": 16777216
@@ -71,57 +66,57 @@
 			"Flags": 16777216
 		},
 		{
-			"Name": "cv_mqtv4_input_static",
+			"Name": "cv_mqtv4_static_input",
 			"DefaultValue": "",
 			"Flags": 16777216
 		},
 		{
-			"Name": "cv_mqtv4_input_marquee",
+			"Name": "cv_mqtv4_marquee_input",
 			"DefaultValue": "",
 			"Flags": 16777216
 		},
 		{
-			"Name": "cv_mqtv4_delay_marquee",
+			"Name": "cv_mqtv4_marquee_delay",
 			"DefaultValue": "1.0",
 			"Flags": 16777216
 		},
 		{
-			"Name": "cv_mqtv4_taglength_marquee",
+			"Name": "cv_mqtv4_marquee_taglength",
 			"DefaultValue": "4",
 			"Flags": 16777216
 		},
 		{
-			"Name": "cv_mqtv4_reverse_marquee",
+			"Name": "cv_mqtv4_marquee_shouldReverse",
 			"DefaultValue": "0",
 			"Flags": 16777216
 		},
 		{
-			"Name": "cv_mqtv4_input_full",
+			"Name": "cv_mqtv4_full_input",
 			"DefaultValue": "",
 			"Flags": 16777216
 		},
 		{
-			"Name": "cv_mqtv4_delay_full",
+			"Name": "cv_mqtv4_full_delay",
 			"DefaultValue": "1.0",
 			"Flags": 16777216
 		},
 		{
-			"Name": "cv_mqtv4_taglength_full",
+			"Name": "cv_mqtv4_full_taglength",
 			"DefaultValue": "4",
 			"Flags": 16777216
 		},
 		{
-			"Name": "cv_mqtv4_auto_full",
+			"Name": "cv_mqtv4_full_shouldAutoSize",
 			"DefaultValue": "1",
 			"Flags": 16777216
 		},
 		{
-			"Name": "cv_mqtv4_input_copy",
+			"Name": "cv_mqtv4_copy_playerName",
 			"DefaultValue": "",
 			"Flags": 16777216
 		},
 		{
-			"Name": "cv_mqtv4_clock_offset",
+			"Name": "cv_mqtv4_clock_timezone",
 			"DefaultValue": "0",
 			"Flags": 16777216
 		},
@@ -136,7 +131,7 @@
 			"Flags": 16777216
 		},
 		{
-			"Name": "cv_mqtv4_input_stat",
+			"Name": "cv_mqtv4_stat_playerName",
 			"DefaultValue": "",
 			"Flags": 16777216
 		},
@@ -151,32 +146,32 @@
 			"Flags": 16777216
 		},
 		{
-			"Name": "cv_mqtv4_preset_top1",
+			"Name": "cv_mqtv4_position_preset_top1",
 			"DefaultValue": "",
 			"Flags": 16777216
 		},
 		{
-			"Name": "cv_mqtv4_preset_top2",
+			"Name": "cv_mqtv4_position_preset_top2",
 			"DefaultValue": "",
 			"Flags": 16777216
 		},
 		{
-			"Name": "cv_mqtv4_preset_top3",
+			"Name": "cv_mqtv4_position_preset_top3",
 			"DefaultValue": "",
 			"Flags": 16777216
 		},
 		{
-			"Name": "cv_mqtv4_preset_top4",
+			"Name": "cv_mqtv4_position_preset_top4",
 			"DefaultValue": "",
 			"Flags": 16777216
 		},
 		{
-			"Name": "cv_mqtv4_preset_top5",
+			"Name": "cv_mqtv4_position_preset_top5",
 			"DefaultValue": "",
 			"Flags": 16777216
 		},
 		{
-			"Name": "cv_mqtv4_preset_top6",
+			"Name": "cv_mqtv4_position_preset_top6",
 			"DefaultValue": "",
 			"Flags": 16777216
 		}

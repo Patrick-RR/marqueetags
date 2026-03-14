@@ -29,9 +29,8 @@ void function main(){
     ModSettings_AddModCategory(	" > General settings" )
 
     ModSettings_AddEnumSetting(	"cv_mqtv4_enabled", "Enabled", boolEnum )
-    ModSettings_AddEnumSetting( "cv_mqtv4_mode", "Mode", modeEnum )
+    //ModSettings_AddEnumSetting( "cv_mqtv4_mode", "Mode", modeEnum )
     ModSettings_AddSetting(	"cv_mqtv4_activePreset", "Active preset", "string" )
-
 
     // "Hardcoded" network IDs to use later on
     ModSettings_AddSetting(	"cv_mqtv4_networkID_owned", "Owned network ID", "int" )
@@ -53,17 +52,15 @@ void function main(){
     ModSettings_AddButton( "[UPDATE TAG]", void function():(){ updateTag() } )
     ModSettings_AddButton( "[REFRESH PRESETS]", void function():(){ refreshPresets() } )
 
-
+    // Load preset json so we can easily get every preset for each mode
     table allPresets = getAllPresets()
 
     // Static
     // input
     ModSettings_AddModCategory(	" > Static settings" )
-    ModSettings_AddSetting(	"cv_mqtv4_input_static", "Input", "string" )
+    ModSettings_AddSetting(	"cv_mqtv4_static_input", "Input", "string" )
 
     // *static presets*
-    // loadPresetsForMode( "static" )
-    
     foreach( table preset in allPresets[ "static" ] ){
         string presetName = expect string( preset[ "presetName" ] )
         ModSettings_AddButton(
@@ -74,36 +71,18 @@ void function main(){
         )
     }
 
-    // ModSettings_AddButton( "Print all static presets", void function():(){ loadPresetsForMode( "static" ) } )
-
-    // ModSettings_AddButton(
-    //     format( "[ Load preset 'Static 1' ] - static1" ),
-    //     void function():() {
-    //         SetConVarString( "cv_mqtv4_activePreset", "Static 1" ) 
-    //     }
-    // )
-    // ModSettings_AddButton(
-    //     format( "[ Load preset 'Static 2' ] - static2" ),
-    //     void function():() {
-    //         SetConVarString( "cv_mqtv4_activePreset", "Static 2" ) 
-    //     }
-    // )
-
-
     // Marquee
     // input
     // delay
     // taglength (auto bitslicelength)
     // reverse
     ModSettings_AddModCategory(	" > Marquee settings" )
-    ModSettings_AddSetting(	"cv_mqtv4_input_marquee", "Input", "string" )
-    ModSettings_AddSetting(	"cv_mqtv4_delay_marquee", "Delay", "float" )
-    ModSettings_AddSetting(	"cv_mqtv4_taglength_marquee", "Tag length", "int" )
-    ModSettings_AddEnumSetting( "cv_mqtv4_reverse_marquee", "Reverse", boolEnum )
+    ModSettings_AddSetting(	"cv_mqtv4_marquee_input", "Input", "string" )
+    ModSettings_AddSetting(	"cv_mqtv4_marquee_delay", "Delay", "float" )
+    ModSettings_AddSetting(	"cv_mqtv4_marquee_taglength", "Tag length", "int" )
+    ModSettings_AddEnumSetting( "cv_mqtv4_marquee_shouldReverse", "Reverse", boolEnum )
 
     // *marquee presets*
-    // loadPresetsForMode( "marquee" )
-
     foreach( table preset in allPresets[ "marquee" ] ){
         string presetName = expect string( preset[ "presetName" ] )
         ModSettings_AddButton(
@@ -114,33 +93,18 @@ void function main(){
         )
     }
 
-    // ModSettings_AddButton(
-    //     format( "[ Load preset 'Marquee 1' ] - marquee1" ),
-    //     void function():() {
-    //         SetConVarString( "cv_mqtv4_activePreset", "Marquee 1" ) 
-    //     }
-    // )
-    // ModSettings_AddButton(
-    //     format( "[ Load preset 'Marquee 2' ] - marquee2" ),
-    //     void function():() {
-    //         SetConVarString( "cv_mqtv4_activePreset", "Marquee 2" ) 
-    //     }
-    // )
-
     // Full
     // input
     // delay
     // taglength (auto bitslicelength)
     // auto taglength
     ModSettings_AddModCategory(	" > Full settings" )
-    ModSettings_AddSetting(	"cv_mqtv4_input_full", "Input", "string" )
-    ModSettings_AddSetting(	"cv_mqtv4_delay_full", "Delay", "float" )
-    ModSettings_AddSetting(	"cv_mqtv4_taglength_full", "Tag length", "int" )
-    ModSettings_AddEnumSetting( "cv_mqtv4_auto_full", "Auto taglength", boolEnum )
+    ModSettings_AddSetting(	"cv_mqtv4_full_input", "Input", "string" )
+    ModSettings_AddSetting(	"cv_mqtv4_full_delay", "Delay", "float" )
+    ModSettings_AddSetting(	"cv_mqtv4_full_taglength", "Tag length", "int" )
+    ModSettings_AddEnumSetting( "cv_mqtv4_full_shouldAutoSize", "Auto taglength", boolEnum )
 
     // *full presets*
-    // loadPresetsForMode( "full" )
-
     foreach( table preset in allPresets[ "full" ] ){
         string presetName = expect string( preset[ "presetName" ] )
         ModSettings_AddButton(
@@ -151,26 +115,12 @@ void function main(){
         )
     }
 
-    // ModSettings_AddButton(
-    //     format( "[ Load preset 'Full 1' ] - full1" ),
-    //     void function():() {
-    //         SetConVarString( "cv_mqtv4_activePreset", "Full 1" ) 
-    //     }
-    // )
-    // ModSettings_AddButton(
-    //     format( "[ Load preset 'Full 2' ] - full2" ),
-    //     void function():() {
-    //         SetConVarString( "cv_mqtv4_activePreset", "Full 2" ) 
-    //     }
-    // )
-
     // Copy
     // playername
     ModSettings_AddModCategory(	" > Copy settings" )
-    ModSettings_AddSetting(	"cv_mqtv4_input_copy", "Player to copy", "string" )
+    ModSettings_AddSetting(	"cv_mqtv4_copy_playerName", "Player to copy", "string" )
 
     // *copy presets*
-
     foreach( table preset in allPresets[ "copy" ] ){
         string presetName = expect string( preset[ "presetName" ] )
         ModSettings_AddButton(
@@ -181,26 +131,12 @@ void function main(){
         )
     }
 
-    // ModSettings_AddButton(
-    //     format( "[ Load preset 'Copy 1' ] - copy1" ),
-    //     void function():() {
-    //         SetConVarString( "cv_mqtv4_activePreset", "Copy 1" ) 
-    //     }
-    // )
-    // ModSettings_AddButton(
-    //     format( "[ Load preset 'Copy 2' ] - copy2" ),
-    //     void function():() {
-    //         SetConVarString( "cv_mqtv4_activePreset", "Copy 2" ) 
-    //     }
-    // )
-
     // Clock
     // timezone offset
     ModSettings_AddModCategory(	" > Clock settings" )
-    ModSettings_AddEnumSetting( "cv_mqtv4_clock_offset", "Timezone", timezoneEnum )
+    ModSettings_AddEnumSetting( "cv_mqtv4_clock_timezone", "Timezone", timezoneEnum )
 
     // *clock presets*
-
     foreach( table preset in allPresets[ "clock" ] ){
         string presetName = expect string( preset[ "presetName" ] )
         ModSettings_AddButton(
@@ -211,19 +147,6 @@ void function main(){
         )
     }
 
-    // ModSettings_AddButton(
-    //     format( "[ Load preset 'Clock 1' ] - clock1" ),
-    //     void function():() {
-    //         SetConVarString( "cv_mqtv4_activePreset", "Clock 1" ) 
-    //     }
-    // )
-    // ModSettings_AddButton(
-    //     format( "[ Load preset 'Clock 2' ] - clock2" ),
-    //     void function():() {
-    //         SetConVarString( "cv_mqtv4_activePreset", "Clock 2" ) 
-    //     }
-    // )
-
     // Ping
     // refreshrate
     // append ms suffix
@@ -232,7 +155,6 @@ void function main(){
     ModSettings_AddEnumSetting( "cv_mqtv4_ping_useSuffix", "Append ms suffix for ping < 100", boolEnum )
 
     // *ping presets*
-
     foreach( table preset in allPresets[ "ping" ] ){
         string presetName = expect string( preset[ "presetName" ] )
         ModSettings_AddButton(
@@ -243,30 +165,16 @@ void function main(){
         )
     }
 
-    // ModSettings_AddButton(
-    //     format( "[ Load preset 'Ping 1' ] - ping1" ),
-    //     void function():() {
-    //         SetConVarString( "cv_mqtv4_activePreset", "Ping 1" ) 
-    //     }
-    // )
-    // ModSettings_AddButton(
-    //     format( "[ Load preset 'Ping 2' ] - ping2" ),
-    //     void function():() {
-    //         SetConVarString( "cv_mqtv4_activePreset", "Ping 2" ) 
-    //     }
-    // )
-
     // PGS
     // playername (defaults to self)
     // refreshrate
     // stat
     ModSettings_AddModCategory(	" > Stat settings" )
-    ModSettings_AddSetting(	"cv_mqtv4_input_stat", "Playername to grab stats from", "string" )
+    ModSettings_AddSetting(	"cv_mqtv4_stat_playerName", "Playername to grab stats from", "string" )
     ModSettings_AddSetting(	"cv_mqtv4_stat_refreshrate", "Refreshrate", "float" )
     ModSettings_AddEnumSetting(	"cv_mqtv4_stat_toTrack", "Stat to track", statEnum )
 
     // *pgs presets*
-
     foreach( table preset in allPresets[ "stat" ] ){
         string presetName = expect string( preset[ "presetName" ] )
         ModSettings_AddButton(
@@ -277,19 +185,6 @@ void function main(){
         )
     }
 
-    // ModSettings_AddButton(
-    //     format( "[ Load preset 'Stat 1' ] - stat1" ),
-    //     void function():() {
-    //         SetConVarString( "cv_mqtv4_activePreset", "Stat 1" ) 
-    //     }
-    // )
-    // ModSettings_AddButton(
-    //     format( "[ Load preset 'Stat 2' ] - stat2" ),
-    //     void function():() {
-    //         SetConVarString( "cv_mqtv4_activePreset", "Stat 2" ) 
-    //     }
-    // )
-
     // Position
     // top 1 preset or static tag
     // top 2 "
@@ -298,15 +193,14 @@ void function main(){
     // top 5 "
     // top 6 "
     ModSettings_AddModCategory(	" > Position settings" )
-    ModSettings_AddSetting(	"cv_mqtv4_preset_top1", "Top 1 preset name", "string" )
-    ModSettings_AddSetting(	"cv_mqtv4_preset_top2", "Top 2 preset name", "string" )
-    ModSettings_AddSetting(	"cv_mqtv4_preset_top3", "Top 3 preset name", "string" )
-    ModSettings_AddSetting(	"cv_mqtv4_preset_top4", "Top 4 preset name", "string" )
-    ModSettings_AddSetting(	"cv_mqtv4_preset_top5", "Top 5 preset name", "string" )
-    ModSettings_AddSetting(	"cv_mqtv4_preset_top6", "Top 6 preset name", "string" )
+    ModSettings_AddSetting(	"cv_mqtv4_position_preset_top1", "Top 1 preset name", "string" )
+    ModSettings_AddSetting(	"cv_mqtv4_position_preset_top2", "Top 2 preset name", "string" )
+    ModSettings_AddSetting(	"cv_mqtv4_position_preset_top3", "Top 3 preset name", "string" )
+    ModSettings_AddSetting(	"cv_mqtv4_position_preset_top4", "Top 4 preset name", "string" )
+    ModSettings_AddSetting(	"cv_mqtv4_position_preset_top5", "Top 5 preset name", "string" )
+    ModSettings_AddSetting(	"cv_mqtv4_position_preset_top6", "Top 6 preset name", "string" )
 
     // *position presets*
-
     foreach( table preset in allPresets[ "position" ] ){
         string presetName = expect string( preset[ "presetName" ] )
         ModSettings_AddButton(
@@ -316,64 +210,7 @@ void function main(){
             }
         )
     }
-    // ModSettings_AddButton(
-    //     format( "[ Load preset 'Position 1' ] - position1" ),
-    //     void function():() {
-    //         SetConVarString( "cv_mqtv4_activePreset", "Position 1" ) 
-    //     }
-    // )
-    // ModSettings_AddButton(
-    //     format( "[ Load preset 'Position 2' ] - position2" ),
-    //     void function():() {
-    //         SetConVarString( "cv_mqtv4_activePreset", "Position 2" ) 
-    //     }
-    // )
-
-    // shorten: [top1] [top2] [top3] [top4] [top5] [top5]
-
 }
-
-// void function loadPresetsForMode( string mode ){
-//     void functionref( string ) onSuccess = void function( string content ) : ( mode ){
-//         table json = DecodeJSON( content )
-
-//         foreach( table preset in json[ mode ] ){
-//             foreach( k, v in preset ){
-//                 // debugPrint( k + " : " + v )
-
-//                 string presetName = expect string( preset[ "presetName" ] )
-//                 ModSettings_AddButton(
-//                     format( "[ Load preset '%s' ]", presetName ),
-//                     void function():( presetName ) {
-//                         debugPrint( format( "Set active preset to '%s'", presetName ) )  
-//                         SetConVarString( "cv_mqtv4_activePreset", presetName ) 
-//                     }
-//                 )
-//             }
-//         }
-//     }
-
-//     NSLoadFile( mqt_preset_filepath, onSuccess, void function(){ debugPrint( "fuck" ) } )
-// }
-
-// array function getAllPresetsForMode( string mode ){
-//     table state = {
-//         data = [],
-//         finished = false
-//     }
-
-//     void functionref( string ) onSuccess = void function( string content ) : ( state, mode ){
-//         state.data = DecodeJSON( content )[ mode ]    
-//         state.finished = true
-//     }
-
-//     NSLoadFile( mqt_preset_filepath, onSuccess, void function(){ debugPrint( "fuck fuck FUCKKKKKKKKKKKKK" ) } )
-
-//     while( !state.finished )
-//         wait 0
-    
-//     return expect array( state.data )
-// }
 
 table function getAllPresets(){
     table state = {

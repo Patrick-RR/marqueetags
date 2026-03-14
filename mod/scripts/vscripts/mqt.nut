@@ -86,25 +86,25 @@ void function main(){
         WaitFrame()
 
         // [ "Static", "Marquee", "Full", "Copy", "Clock", "Ping", "Stat", "Position" ]
-        int modeIndex = GetConVarInt( "cv_mqtv4_mode" )
-        thread modeTable[ modeIndex ]()
+        // int modeIndex = GetConVarInt( "cv_mqtv4_mode" )
+        // thread modeTable[ modeIndex ]()
 
         WaitSignal( clGlobal.signalDummy, "mqt_newSettings" )
     }
 }
 
 void function mode_static(){
-    string input = GetConVarString( "cv_mqtv4_input_static" )
+    string input = GetConVarString( "cv_mqtv4_static_input" )
     setTag( input )
 }
 
 void function mode_marquee(){
     EndSignal( clGlobal.signalDummy, "mqt_newSettings" )
 
-    string input = GetConVarString( "cv_mqtv4_input_marquee" )
-    float delay = GetConVarFloat( "cv_mqtv4_delay_marquee" )
-    int taglength = GetConVarInt( "cv_mqtv4_taglength_marquee" )
-    bool reverse = GetConVarBool( "cv_mqtv4_reverse_marquee" )
+    string input = GetConVarString( "cv_mqtv4_marquee_input" )
+    float delay = GetConVarFloat( "cv_mqtv4_marquee_delay" )
+    int taglength = GetConVarInt( "cv_mqtv4_marquee_taglength" )
+    bool reverse = GetConVarBool( "cv_mqtv4_marquee_shouldReverse" )
 
     debugPrint( "MAKE MARQUEE START" )
     array<string> tags = makeMarquee( input, taglength )
@@ -157,10 +157,10 @@ array<string> function makeMarquee( string input, int taglength ){
 void function mode_full(){
     EndSignal( clGlobal.signalDummy, "mqt_newSettings" )
 
-    string input = GetConVarString( "cv_mqtv4_input_full" )
-    float delay = GetConVarFloat( "cv_mqtv4_delay_full" )
-    int taglength = GetConVarInt( "cv_mqtv4_taglength_full" )
-    bool auto = GetConVarBool( "cv_mqtv4_auto_full" )
+    string input = GetConVarString( "cv_mqtv4_full_input" )
+    float delay = GetConVarFloat( "cv_mqtv4_full_delay" )
+    int taglength = GetConVarInt( "cv_mqtv4_full_taglength" )
+    bool auto = GetConVarBool( "cv_mqtv4_full_shouldAutoSize" )
 
     debugPrint( "MAKE FULL START" )
     array<string> tags = makeFull( input, taglength, auto )
