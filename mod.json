@@ -141,6 +141,11 @@
 			"Flags": 16777216
 		},
 		{
+			"Name": "cv_mqtv4_stat_refreshrate",
+			"DefaultValue": "1.0",
+			"Flags": 16777216
+		},
+		{
 			"Name": "cv_mqtv4_stat_toTrack",
 			"DefaultValue": "0",
 			"Flags": 16777216
