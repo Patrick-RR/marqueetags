@@ -4,8 +4,7 @@ global function mqt_signalNewSettings
 
 #if HAS_TOOLS
 LogoData LD = {
-    logo =
-    [
+    logo = [
         "                         .-._                                                      ",
         "                          \\  '-._                                                 ",
         "                     ______/___  '.                                                ",
@@ -32,7 +31,7 @@ LogoData LD = {
 }
 #endif
 
-const table<int, void functionref()> modeTable
+table<int, void functionref()> modeTable
 
 void function debugPrint( string message ){
     printt( "[MQTV5] " + message )
@@ -46,11 +45,11 @@ void function modeTable_Init(){
     modeTable[0] <- mode_static
     modeTable[1] <- mode_marquee
     modeTable[2] <- mode_full
-    modeTable[3] <- {}
-    modeTable[4] <- {}
-    modeTable[5] <- {}
-    modeTable[6] <- {}
-    modeTable[7] <- {}
+    modeTable[3] <- null
+    modeTable[4] <- null
+    modeTable[5] <- null
+    modeTable[6] <- null
+    modeTable[7] <- null
 }
 
 // RunUIScript( "mqt_setTag", tag )
@@ -72,10 +71,10 @@ void function mqt_Init(){
         modeTable_Init()
         thread main()
 
-        debugPrint( "Initialized! :3")
+        debugPrint( "Initialized! :3" )
     #else
         debugPrint( "Missing dependency: 'drachenfruchl.tools'" )
-        debugPrint( "Failed to initialize! 3:")
+        debugPrint( "Failed to initialize! 3:" )
     #endif
 }
 
@@ -89,44 +88,6 @@ void function main(){
         // [ "Static", "Marquee", "Full", "Copy", "Clock", "Ping", "Stat", "Position" ]
         int modeIndex = GetConVarInt( "cv_mqtv4_mode" )
         thread modeTable[ modeIndex ]()
-        /*
-        switch( mode ){
-            // Static
-            case 0:
-                mode_static()
-                break
-
-            // Marquee
-            case 1:
-                thread mode_marquee()
-                break
-
-            // Full
-            case 2:
-                thread mode_full()
-                break
-
-            // Copy
-            case 3:
-                break
-
-            // Copy
-            case 4:
-                break
-
-            // Ping
-            case 5:
-                break
-
-            // Stat
-            case 6:
-                break
-
-            // Position
-            case 7:
-                break
-        }
-        */
 
         WaitSignal( clGlobal.signalDummy, "mqt_newSettings" )
     }
