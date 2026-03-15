@@ -31,6 +31,11 @@
 			"Flags": 16777216
 		},
 		{
+			"Name": "cv_mqtv4_activeMode",
+			"DefaultValue": "",
+			"Flags": 16777216
+		},
+		{
 			"Name": "cv_mqtv4_networkID_owned",
 			"DefaultValue": "",
 			"Flags": 16777216
@@ -71,6 +76,11 @@
 			"Flags": 16777216
 		},
 		{
+			"Name": "cv_mqtv4_static_presetName",
+			"DefaultValue": "Unnamed preset",
+			"Flags": 16777216
+		},
+		{
 			"Name": "cv_mqtv4_marquee_input",
 			"DefaultValue": "",
 			"Flags": 16777216
@@ -88,6 +98,11 @@
 		{
 			"Name": "cv_mqtv4_marquee_shouldReverse",
 			"DefaultValue": "0",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_marquee_presetName",
+			"DefaultValue": "Unnamed preset",
 			"Flags": 16777216
 		},
 		{
@@ -111,13 +126,28 @@
 			"Flags": 16777216
 		},
 		{
+			"Name": "cv_mqtv4_full_presetName",
+			"DefaultValue": "Unnamed preset",
+			"Flags": 16777216
+		},
+		{
 			"Name": "cv_mqtv4_copy_playerName",
 			"DefaultValue": "",
 			"Flags": 16777216
 		},
 		{
+			"Name": "cv_mqtv4_copy_presetName",
+			"DefaultValue": "Unnamed preset",
+			"Flags": 16777216
+		},
+		{
 			"Name": "cv_mqtv4_clock_timezone",
-			"DefaultValue": "0",
+			"DefaultValue": "14",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_clock_presetName",
+			"DefaultValue": "New preset",
 			"Flags": 16777216
 		},
 		{
@@ -128,6 +158,11 @@
 		{
 			"Name": "cv_mqtv4_ping_useSuffix",
 			"DefaultValue": "0",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_ping_presetName",
+			"DefaultValue": "Unnamed preset",
 			"Flags": 16777216
 		},
 		{
@@ -143,6 +178,11 @@
 		{
 			"Name": "cv_mqtv4_stat_toTrack",
 			"DefaultValue": "0",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_stat_presetName",
+			"DefaultValue": "Unnamed preset",
 			"Flags": 16777216
 		},
 		{
@@ -173,6 +213,11 @@
 		{
 			"Name": "cv_mqtv4_position_preset_top6",
 			"DefaultValue": "",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_position_presetName",
+			"DefaultValue": "Unnamed preset",
 			"Flags": 16777216
 		}
 	],

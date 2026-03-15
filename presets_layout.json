@@ -1,110 +1,57 @@
 {
-    "static": [
-        {
-            "presetName": "static 1",
-            "input": "aaaa"
-        },
-        {
-            "presetName": "static 2",
-            "input": "bbbb"
+    "stat": {
+        "mfw": {
+            "presetName": "mfw",
+            "toTrack": 0,
+            "input": "me",
+            "refreshrate": 1.0
         }
-    ],
-    "marquee": [
-        {
-            "presetName": "marquee 1",
-            "input": "hello world",
+    },
+    "marquee": {
+        "sigma preset": {
+            "presetName": "sigma preset",
             "delay": 1.0,
+            "input": "sigma",
             "taglength": 4,
-            "reverse": false
-        },
-        {
-            "presetName": "marquee 2",
-            "input": "goodbye world",
-            "delay": 1.0,
-            "taglength": 3,
             "reverse": true
         }
-    ],
-    "full": [
-        {
-            "presetName": "full 1",
-            "input": "download a car",
-            "delay": 1.0,
-            "taglength": 4,
-            "auto": false
-        },
-        {
-            "presetName": "full 2",
-            "input": "downloa ar meowar",
-            "delay": 1.0,
-            "taglength": 4,
-            "auto": true
+    },
+    "position": {
+        "numbrz": {
+            "top2": "2",
+            "presetName": "numbrz",
+            "top3": "3",
+            "top4": "4",
+            "top5": "5",
+            "top1": "1",
+            "top6": "6"
         }
-    ],
-    "copy": [
-        {
-            "presetName": "copy 1",
-            "input": "drachenfruchl"
-        },
-        {
-            "presetName": "copy 2",
-            "input": "knos"
+    },
+    "full": {
+        "triple t": {
+            "input": "tong tong tong",
+            "auto": true,
+            "delay": 2.5,
+            "taglength": 1,
+            "presetName": "triple t"
         }
-    ],
-    "clock": [
-        {
-            "presetName": "clock 1",
-            "timezone": 0
-        },
-        {
-            "presetName": "clock 2",
-            "timezone": 2
+    },
+    "static": {
+        "gabagool": {
+            "presetName": "gabagool",
+            "input": "hi"
         }
-    ],
-    "ping": [
-        {
-            "presetName": "ping 1",
-            "refreshrate": 1.0,
-            "useSuffix": false
-        },
-        {
-            "presetName": "ping 2",
-            "refreshrate": 1.5,
-            "useSuffix": true
+    },
+    "copy": {
+        "fuckass": {
+            "presetName": "fuckass",
+            "input": "anu"
         }
-    ],
-    "stat": [
-        {
-            "presetName": "stat 1",
-            "input": "drachenfruchl",
-            "refreshrate": 5.0,
-            "toTrack": "SCORE_ASSAULT"
-        },
-        {
-            "presetName": "stat 2",
-            "input": "knos",
-            "refreshrate": 1.0,
-            "toTrack": "PING"
+    },
+    "clock": {
+        "new york": {
+            "presetName": "new york",
+            "timezone": 14
         }
-    ],
-    "position": [
-        {
-            "presetName": "position 1",
-            "top1": "pos1top1",
-            "top2": "pos1top2",
-            "top3": "pos1top3",
-            "top4": "pos1top4",
-            "top5": "pos1top5",
-            "top6": "pos1top6"
-        },
-        {
-            "presetName": "position 2",
-            "top1": "pos2top1",
-            "top2": "pos2top2",
-            "top3": "pos2top3",
-            "top4": "pos2top4",
-            "top5": "pos2top5",
-            "top6": "pos2top6"
-        }
-    ]
+    }
 }

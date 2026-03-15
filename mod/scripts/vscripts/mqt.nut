@@ -1,6 +1,7 @@
 untyped
 global function mqt_Init
 global function mqt_signalNewSettings
+global function mqt_signalUpdatePresets
 
 #if HAS_TOOLS
 LogoData LD = {
@@ -31,25 +32,64 @@ LogoData LD = {
 }
 #endif
 
-table<int, void functionref()> modeTable
+const string MQT_PRESET_FILEPATH = "mqtv4_presets.json"
+
+table allPresets = {}
+table<string, void functionref( string preset = "" )> modeTable = {}
 
 void function debugPrint( string message ){
-    printt( "[MQTV5] " + message )
+    printt( "[MQTV4] " + message )
 }
 
 void function mqt_signalNewSettings(){
-    Signal( clGlobal.signalDummy, "mqt_newSettings" )
+    Signal( clGlobal.signalDummy, "mqt_signal_newSettings" )
+}
+
+void function mqt_signalUpdatePresets(){
+    Signal( clGlobal.signalDummy, "mqt_signal_updatePresets" )
 }
 
 void function modeTable_Init(){
-    modeTable[0] <- mode_static
-    modeTable[1] <- mode_marquee
-    modeTable[2] <- mode_full
-    modeTable[3] <- null
-    modeTable[4] <- null
-    modeTable[5] <- null
-    modeTable[6] <- null
-    modeTable[7] <- null
+    modeTable[ "static" ] <- mode_static
+    modeTable[ "marquee" ] <- mode_marquee
+    modeTable[ "full" ] <- mode_full
+    modeTable[ "copy" ] <- null
+    modeTable[ "clock" ] <- null
+    modeTable[ "ping" ] <- null
+    modeTable[ "stat" ] <- null
+    modeTable[ "position" ] <- null
+}
+
+table function getAllPresets(){
+    // Create .json file if its missing
+    if( !NSDoesFileExist( MQT_PRESET_FILEPATH ) ){
+        NSSaveJSONFile( MQT_PRESET_FILEPATH, {} )
+        return {}
+    }
+
+    table state = {
+        data = {},
+        finished = false
+    }
+
+    void functionref( string ) onSuccess = void function( string content ) : ( state ){
+        if( content != "" )
+            state.data = DecodeJSON( content )   
+        state.finished = true
+    }
+
+    NSLoadFile( MQT_PRESET_FILEPATH, onSuccess, void function(){ debugPrint( "fuck fuck FUCKKKKKKKKKKKKK" ) } )
+
+    while( !state.finished )
+        wait 0
+    
+    debugPrint( "Loaded preset table" )
+
+    return expect table( state.data )
+}
+
+void function setTag( string tag ){
+    RunUIScript( "mqt_setTag", tag )
 }
 
 // RunUIScript( "mqt_setTag", tag )
@@ -66,16 +106,34 @@ void function mqt_Init(){
     // Check dependency
     #if HAS_TOOLS
         dtool_printLogo( LD )
+        
+        RegisterSignal( "mqt_signal_newSettings" )
+        RegisterSignal( "mqt_signal_updatePresets" )
 
-        RegisterSignal( "mqt_newSettings" )
         modeTable_Init()
-        thread main()
+        
+        thread keepUpdatingPresets()
 
-        debugPrint( "Initialized! :3" )
+        thread function():(){
+            allPresets = getAllPresets()
+            debugPrint( "Initialized! :3" )
+            main()
+        }()
     #else
         debugPrint( "Missing dependency: 'drachenfruchl.tools'" )
         debugPrint( "Failed to initialize! 3:" )
     #endif
+}
+
+void function keepUpdatingPresets(){
+    for(;;){
+        WaitSignal( clGlobal.signalDummy, "mqt_signal_updatePresets" )
+        debugPrint( "Updating presets" )
+
+        allPresets = getAllPresets()
+
+        wait 0
+    }
 }
 
 void function main(){
@@ -83,28 +141,57 @@ void function main(){
     // This is different to mqtv3 which constantly checked for new settings by using multiple temp convars
     // The aim here is to make it less perfomance heavy and avoid accidental changes by waiting for manual approval through the user
     for(;;){
-        WaitFrame()
-
         // [ "Static", "Marquee", "Full", "Copy", "Clock", "Ping", "Stat", "Position" ]
-        // int modeIndex = GetConVarInt( "cv_mqtv4_mode" )
-        // thread modeTable[ modeIndex ]()
+        string mode = GetConVarString( "cv_mqtv4_activeMode" )
+        string preset = GetConVarString( "cv_mqtv4_activePreset" )
+        
+        debugPrint( format( "Setting new tag - Mode: '%s', Preset: %s", mode, ( preset == "" ? "None" : "'" + preset + "'" ) ) )
 
-        WaitSignal( clGlobal.signalDummy, "mqt_newSettings" )
+        // null functions because i havent implemented them yet
+        if( modeTable[ mode ] != null )
+            thread modeTable[ mode ]( preset )
+
+        WaitSignal( clGlobal.signalDummy, "mqt_signal_newSettings" )
+        WaitFrame()
     }
 }
 
-void function mode_static(){
-    string input = GetConVarString( "cv_mqtv4_static_input" )
+void function mode_static( string preset = "" ){
+    string input
+
+    // If no preset was selected use the current settings
+    // Otherwise use the input from the preset
+    if( preset == "" )
+        input = GetConVarString( "cv_mqtv4_static_input" )
+    else
+        input = expect string( allPresets[ "static" ][ preset ].input ) 
+
     setTag( input )
 }
 
-void function mode_marquee(){
-    EndSignal( clGlobal.signalDummy, "mqt_newSettings" )
+void function mode_marquee( string preset = "" ){
+    EndSignal( clGlobal.signalDummy, "mqt_signal_newSettings" )
 
-    string input = GetConVarString( "cv_mqtv4_marquee_input" )
-    float delay = GetConVarFloat( "cv_mqtv4_marquee_delay" )
-    int taglength = GetConVarInt( "cv_mqtv4_marquee_taglength" )
-    bool reverse = GetConVarBool( "cv_mqtv4_marquee_shouldReverse" )
+    string input
+    float delay 
+    int taglength
+    bool reverse
+
+    // If no preset was selected use the current settings
+    // Otherwise use the values from the preset
+    if( preset == "" ){
+        input = GetConVarString( "cv_mqtv4_marquee_input" )
+        delay = GetConVarFloat( "cv_mqtv4_marquee_delay" )
+        taglength = GetConVarInt( "cv_mqtv4_marquee_taglength" )
+        reverse = GetConVarBool( "cv_mqtv4_marquee_shouldReverse" )
+    } else {
+        table preset = expect table( allPresets[ "marquee" ][ preset ] )
+
+        input = expect string( preset.input )
+        delay = expect float( preset.delay )
+        taglength = expect int( preset.taglength )
+        reverse = expect bool( preset.reverse )
+    }
 
     debugPrint( "MAKE MARQUEE START" )
     array<string> tags = makeMarquee( input, taglength )
@@ -154,13 +241,29 @@ array<string> function makeMarquee( string input, int taglength ){
     return result
 }
 
-void function mode_full(){
-    EndSignal( clGlobal.signalDummy, "mqt_newSettings" )
+void function mode_full( string preset = "" ){
+    EndSignal( clGlobal.signalDummy, "mqt_signal_newSettings" )
 
-    string input = GetConVarString( "cv_mqtv4_full_input" )
-    float delay = GetConVarFloat( "cv_mqtv4_full_delay" )
-    int taglength = GetConVarInt( "cv_mqtv4_full_taglength" )
-    bool auto = GetConVarBool( "cv_mqtv4_full_shouldAutoSize" )
+    string input
+    float delay
+    int taglength
+    bool auto
+
+    // If no preset was selected use the current settings
+    // Otherwise use the values from the preset
+    if( preset == "" ){
+        input = GetConVarString( "cv_mqtv4_marquee_input" )
+        delay = GetConVarFloat( "cv_mqtv4_marquee_delay" )
+        taglength = GetConVarInt( "cv_mqtv4_marquee_taglength" )
+        auto = GetConVarBool( "cv_mqtv4_marquee_shouldReverse" )
+    } else {
+        table preset = expect table( allPresets[ "full" ][ preset ] )
+
+        input = expect string( preset.input )
+        delay = expect float( preset.delay )
+        taglength = expect int( preset.taglength )
+        auto = expect bool( preset.auto )
+    }
 
     debugPrint( "MAKE FULL START" )
     array<string> tags = makeFull( input, taglength, auto )
@@ -201,8 +304,4 @@ array<string> function makeFull( string input, int taglength, bool auto = false 
     }
 
     return outParts
-}
-
-void function setTag( string tag ){
-    RunUIScript( "mqt_setTag", tag )
 }
