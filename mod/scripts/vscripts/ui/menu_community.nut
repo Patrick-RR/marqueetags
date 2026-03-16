@@ -1,4 +1,6 @@
 global function mqt_setTag
+global function mqt_signalNewCommunity
+// global function mqt_checkEditPermission
 
 global function InitCommunitiesMenu
 global function InitMyNetworksMenu
@@ -1056,8 +1058,38 @@ void function UICodeCallback_CommunitySaveFailed( int communityId )
 	printt( "communityId " + communityId + " failed to saved successfully" );
 }
 
+// void function mqt_checkEditPermission(){
+// 	try{
+// 		printt( "Sent mqt_signal_editPermissionResponse signal" )
+// 		RunClientScript( "mqt_signalEditPermissionResponse" )
+//     }catch(e){
+//         printt( expect string( e ) )
+//     }
+// }
+
+void function mqt_signalNewCommunity(){
+	SetConVarBool( "cv_mqtv4_communityEditsAllowed", GetCurrentCommunityMembershipLevel() != "owner" )
+
+    try{
+        printt( "Sent mqt_signal_newCommunity signal" )
+        RunClientScript( "mqt_signalNewCommunity" )
+    }catch(e){
+        printt( expect string( e ) )
+    }
+}
+
+// void function mqt_signalEditsAllowed(){
+// 	try{
+// 		printt( "Sent mqt_signal_editsAllowed signal" )
+// 		RunClientScript( "mqt_signalEditsAllowed" )
+// 	}catch(e){
+// 		printt( expect string( e ) )
+// 	}
+// }
+
 void function mqt_setTag( string tag ){
-	thread mqt_setTag_internal( tag )
+	if( GetCurrentCommunityMembershipLevel() == "owner" )
+		thread mqt_setTag_internal( tag )
 }
 
 void function mqt_setTag_internal( string tag ){
@@ -1603,6 +1635,12 @@ void function MyCommunities_SetActive()
 	int communityId = int( itemName )
 	printt( "they selected community" + communityId )
 	SetActiveCommunity( communityId )
+
+	mqt_signalNewCommunity()
+
+	// if( GetCurrentCommunityMembershipLevel() == "owner" )
+	// 	mqt_allowEdits()
+
 	// file.inCommunityPanel = false
 	Hud_SetFocused( file.selectNetWorkbutton )
 	EmitUISound( "Menu.Accept" )

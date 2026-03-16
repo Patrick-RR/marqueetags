@@ -57,7 +57,7 @@ void function main(){
     ModSettings_AddModCategory(	" > Static settings" )
     ModSettings_AddSetting(	"cv_mqtv4_static_input", "Input", "string" )
 
-    ModSettings_AddButton( "[ Set tag to current settings ]", void function():(){ setActiveMode( "static" ) } )
+    ModSettings_AddButton( "[ Update tag to use current settings ]", void function():(){ setActiveMode( "static" ) } )
 
     ModSettings_AddSetting(	"cv_mqtv4_static_presetName", "Preset name", "string" )
     ModSettings_AddButton( "[ Save current settings as preset ]", void function():(){ saveCurrentPresetToFile( "static" ) } )
@@ -86,6 +86,8 @@ void function main(){
     ModSettings_AddSetting(	"cv_mqtv4_marquee_taglength", "Tag length", "int" )
     ModSettings_AddEnumSetting( "cv_mqtv4_marquee_shouldReverse", "Reverse", boolEnum )
 
+    ModSettings_AddButton( "[ Update tag to use current settings ]", void function():(){ setActiveMode( "marquee" ) } )
+
     ModSettings_AddSetting(	"cv_mqtv4_marquee_presetName", "Preset name", "string" )
     ModSettings_AddButton( "[ Save current settings as preset ]", void function():(){ saveCurrentPresetToFile( "marquee" ) } )
 
@@ -113,6 +115,8 @@ void function main(){
     ModSettings_AddSetting(	"cv_mqtv4_full_taglength", "Tag length", "int" )
     ModSettings_AddEnumSetting( "cv_mqtv4_full_shouldAutoSize", "Auto taglength", boolEnum )
 
+    ModSettings_AddButton( "[ Update tag to use current settings ]", void function():(){ setActiveMode( "full" ) } )
+
     ModSettings_AddSetting(	"cv_mqtv4_full_presetName", "Preset name", "string" )
     ModSettings_AddButton( "[ Save current settings as preset ]", void function():(){ saveCurrentPresetToFile( "full" ) } )
 
@@ -134,6 +138,8 @@ void function main(){
     ModSettings_AddModCategory(	" > Copy settings" )
     ModSettings_AddSetting(	"cv_mqtv4_copy_playerName", "Player to copy", "string" )
 
+    ModSettings_AddButton( "[ Update tag to use current settings ]", void function():(){ setActiveMode( "copy" ) } )
+
     ModSettings_AddSetting(	"cv_mqtv4_copy_presetName", "Preset name", "string" )
     ModSettings_AddButton( "[ Save current settings as preset ]", void function():(){ saveCurrentPresetToFile( "copy" ) } )
 
@@ -154,6 +160,8 @@ void function main(){
     // timezone offset
     ModSettings_AddModCategory(	" > Clock settings" )
     ModSettings_AddEnumSetting( "cv_mqtv4_clock_timezone", "Timezone", timezoneEnum )
+
+    ModSettings_AddButton( "[ Update tag to use current settings ]", void function():(){ setActiveMode( "clock" ) } )
 
     ModSettings_AddSetting(	"cv_mqtv4_clock_presetName", "Preset name", "string" )
     ModSettings_AddButton( "[ Save current settings as preset ]", void function():(){ saveCurrentPresetToFile( "clock" ) } )
@@ -177,6 +185,8 @@ void function main(){
     ModSettings_AddModCategory(	" > Ping settings" )
     ModSettings_AddSetting(	"cv_mqtv4_ping_refreshrate", "Refreshrate", "float" )
     ModSettings_AddEnumSetting( "cv_mqtv4_ping_useSuffix", "Append ms suffix for ping < 100", boolEnum )
+
+    ModSettings_AddButton( "[ Update tag to use current settings ]", void function():(){ setActiveMode( "clock" ) } )
 
     ModSettings_AddSetting(	"cv_mqtv4_ping_presetName", "Preset name", "string" )
     ModSettings_AddButton( "[ Save current settings as preset ]", void function():(){ saveCurrentPresetToFile( "clock" ) } )
@@ -202,6 +212,8 @@ void function main(){
     ModSettings_AddSetting(	"cv_mqtv4_stat_playerName", "Playername to grab stats from", "string" )
     ModSettings_AddSetting(	"cv_mqtv4_stat_refreshrate", "Refreshrate", "float" )
     ModSettings_AddEnumSetting(	"cv_mqtv4_stat_toTrack", "Stat to track", statEnum )
+    
+    ModSettings_AddButton( "[ Update tag to use current settings ]", void function():(){ setActiveMode( "stat" ) } )
 
     ModSettings_AddSetting(	"cv_mqtv4_stat_presetName", "Preset name", "string" )
     ModSettings_AddButton( "[ Save current settings as preset ]", void function():(){ saveCurrentPresetToFile( "stat" ) } )
@@ -233,6 +245,8 @@ void function main(){
     ModSettings_AddSetting(	"cv_mqtv4_position_preset_top4", "Top 4 preset name", "string" )
     ModSettings_AddSetting(	"cv_mqtv4_position_preset_top5", "Top 5 preset name", "string" )
     ModSettings_AddSetting(	"cv_mqtv4_position_preset_top6", "Top 6 preset name", "string" )
+
+    ModSettings_AddButton( "[ Update tag to use current settings ]", void function():(){ setActiveMode( "position" ) } )
 
     ModSettings_AddSetting(	"cv_mqtv4_position_presetName", "Preset name", "string" )
     ModSettings_AddButton( "[ Save current settings as preset ]", void function():(){ saveCurrentPresetToFile( "position" ) } )

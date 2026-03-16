@@ -26,6 +26,11 @@
 			"Flags": 16777216
 		},
 		{
+			"Name": "cv_mqtv4_communityEditsAllowed",
+			"DefaultValue": "0",
+			"Flags": 4194320
+		},
+		{
 			"Name": "cv_mqtv4_activePreset",
 			"DefaultValue": "",
 			"Flags": 16777216

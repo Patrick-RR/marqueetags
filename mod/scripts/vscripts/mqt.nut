@@ -2,6 +2,9 @@ untyped
 global function mqt_Init
 global function mqt_signalNewSettings
 global function mqt_signalUpdatePresets
+global function mqt_signalNewCommunity
+// global function mqt_signalEditsAllowed
+// global function mqt_signalEditPermissionResponse
 
 #if HAS_TOOLS
 LogoData LD = {
@@ -49,11 +52,23 @@ void function mqt_signalUpdatePresets(){
     Signal( clGlobal.signalDummy, "mqt_signal_updatePresets" )
 }
 
+void function mqt_signalNewCommunity(){
+    Signal( clGlobal.signalDummy, "mqt_signal_newCommunity" )
+}
+
+// void function mqt_signalEditsAllowed(){
+//     Signal( clGlobal.signalDummy, "mqt_signal_editsAllowed" )
+// }
+
+// void function mqt_signalEditPermissionResponse(){
+//     Signal( clGlobal.signalDummy, "mqt_signal_editPermissionResponse" )
+// }
+
 void function modeTable_Init(){
     modeTable[ "static" ] <- mode_static
     modeTable[ "marquee" ] <- mode_marquee
     modeTable[ "full" ] <- mode_full
-    modeTable[ "copy" ] <- null
+    modeTable[ "copy" ] <- mode_copy
     modeTable[ "clock" ] <- null
     modeTable[ "ping" ] <- null
     modeTable[ "stat" ] <- null
@@ -109,6 +124,9 @@ void function mqt_Init(){
         
         RegisterSignal( "mqt_signal_newSettings" )
         RegisterSignal( "mqt_signal_updatePresets" )
+        RegisterSignal( "mqt_signal_newCommunity" )
+        // RegisterSignal( "mqt_signal_editsAllowed" )
+        // RegisterSignal( "mqt_signal_editPermissionResponse" )
 
         modeTable_Init()
         
@@ -141,6 +159,20 @@ void function main(){
     // This is different to mqtv3 which constantly checked for new settings by using multiple temp convars
     // The aim here is to make it less perfomance heavy and avoid accidental changes by waiting for manual approval through the user
     for(;;){
+        // debugPrint( "Checking perms!" )
+        // WaitSignal( clGlobal.signalDummy, "mqt_signal_editsAllowed" )
+        // debugPrint( "Edits allowed in community" )
+
+        // RunUIScript( "mqt_checkEditPermission" )
+        // WaitSignal( clGlobal.signalDummy, "mqt_signal_editPermissionResponse" )
+        if( !GetConVarBool( "cv_mqtv4_communityEditsAllowed" ) ){
+            debugPrint( "Edits NOT allowed in community - go fuck yourself" )
+            WaitSignal( clGlobal.signalDummy, "mqt_signal_newCommunity" )
+            continue
+        }
+
+        debugPrint( "Edits allowed in community :333333333333" )
+
         // [ "Static", "Marquee", "Full", "Copy", "Clock", "Ping", "Stat", "Position" ]
         string mode = GetConVarString( "cv_mqtv4_activeMode" )
         string preset = GetConVarString( "cv_mqtv4_activePreset" )
@@ -151,9 +183,13 @@ void function main(){
         if( modeTable[ mode ] != null )
             thread modeTable[ mode ]( preset )
 
-        WaitSignal( clGlobal.signalDummy, "mqt_signal_newSettings" )
+        WaitSignal( clGlobal.signalDummy, "mqt_signal_newSettings", "mqt_signal_newCommunity" )
         WaitFrame()
+
+        debugPrint( "New settings or new community" )
     }
+
+    wait 0
 }
 
 void function mode_static( string preset = "" ){
@@ -170,7 +206,7 @@ void function mode_static( string preset = "" ){
 }
 
 void function mode_marquee( string preset = "" ){
-    EndSignal( clGlobal.signalDummy, "mqt_signal_newSettings" )
+    EndSignal( clGlobal.signalDummy, "mqt_signal_newSettings", "mqt_signal_newCommunity" )
 
     string input
     float delay 
@@ -242,7 +278,7 @@ array<string> function makeMarquee( string input, int taglength ){
 }
 
 void function mode_full( string preset = "" ){
-    EndSignal( clGlobal.signalDummy, "mqt_signal_newSettings" )
+    EndSignal( clGlobal.signalDummy, "mqt_signal_newSettings", "mqt_signal_newCommunity" )
 
     string input
     float delay
@@ -304,4 +340,46 @@ array<string> function makeFull( string input, int taglength, bool auto = false 
     }
 
     return outParts
+}
+
+void function mode_copy( string preset = "" ){
+    EndSignal( clGlobal.signalDummy, "mqt_signal_newSettings", "mqt_signal_newCommunity" )
+
+    string playerName
+
+    // If no preset was selected use the current settings
+    // Otherwise use the input from the preset
+    if( preset == "" )
+        playerName = GetConVarString( "cv_mqtv4_copy_playerName" )
+    else
+        playerName = expect string( allPresets[ "copy" ][ preset ].input ) 
+
+    for(;;){
+        entity player = dtool_getPlayerMatch_entity( playerName )
+        while( player == null ){
+            wait 1
+            player = dtool_getPlayerMatch_entity( playerName )
+        }
+
+        string tag
+        string oldTag
+
+        for(;;){
+            tag = dtool_getClanTagByEntity( player )
+            while( tag == oldTag ){
+                wait 0.1
+                tag = dtool_getClanTagByEntity( player )
+            }
+
+            if( tag == "" ) 
+                break
+
+            setTag( tag )
+            oldTag = tag
+
+            wait 0
+        }
+
+        wait 0
+    }
 }
