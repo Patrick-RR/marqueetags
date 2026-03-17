@@ -3,8 +3,6 @@ global function mqt_Init
 global function mqt_signalNewSettings
 global function mqt_signalUpdatePresets
 global function mqt_signalNewCommunity
-// global function mqt_signalEditsAllowed
-// global function mqt_signalEditPermissionResponse
 
 #if HAS_TOOLS
 LogoData LD = {
@@ -29,9 +27,6 @@ LogoData LD = {
     ]
     color_start = < 212, 220, 255 > // #D4DCFF Periwinkle
     color_end   = < 125, 131, 255 > // #7D83FF Soft Periwinkle
-
-    // color_start = < 255, 255, 255 > // #FFFFFF White
-    // color_end   = < 255, 51, 153 > // #ff3399 Soft pink
 }
 #endif
 
@@ -55,14 +50,6 @@ void function mqt_signalUpdatePresets(){
 void function mqt_signalNewCommunity(){
     Signal( clGlobal.signalDummy, "mqt_signal_newCommunity" )
 }
-
-// void function mqt_signalEditsAllowed(){
-//     Signal( clGlobal.signalDummy, "mqt_signal_editsAllowed" )
-// }
-
-// void function mqt_signalEditPermissionResponse(){
-//     Signal( clGlobal.signalDummy, "mqt_signal_editPermissionResponse" )
-// }
 
 void function modeTable_Init(){
     modeTable[ "static" ] <- mode_static
@@ -107,16 +94,6 @@ void function setTag( string tag ){
     RunUIScript( "mqt_setTag", tag )
 }
 
-// RunUIScript( "mqt_setTag", tag )
-/*
-const array<int> timezoneOffsets = [
-	-12, -11, -10, -9, -8, -7, -6,
-	-5, -4, -3, -2, -1, 0, 1,
-	2, 3, 4, 5, 6, 7, 8,
-	9, 10, 11, 12, 13, 14
-]
-*/
-
 void function mqt_Init(){
     // Check dependency
     #if HAS_TOOLS
@@ -125,8 +102,6 @@ void function mqt_Init(){
         RegisterSignal( "mqt_signal_newSettings" )
         RegisterSignal( "mqt_signal_updatePresets" )
         RegisterSignal( "mqt_signal_newCommunity" )
-        // RegisterSignal( "mqt_signal_editsAllowed" )
-        // RegisterSignal( "mqt_signal_editPermissionResponse" )
 
         modeTable_Init()
         
@@ -159,12 +134,6 @@ void function main(){
     // This is different to mqtv3 which constantly checked for new settings by using multiple temp convars
     // The aim here is to make it less perfomance heavy and avoid accidental changes by waiting for manual approval through the user
     for(;;){
-        // debugPrint( "Checking perms!" )
-        // WaitSignal( clGlobal.signalDummy, "mqt_signal_editsAllowed" )
-        // debugPrint( "Edits allowed in community" )
-
-        // RunUIScript( "mqt_checkEditPermission" )
-        // WaitSignal( clGlobal.signalDummy, "mqt_signal_editPermissionResponse" )
         if( !GetConVarBool( "cv_mqtv4_communityEditsAllowed" ) ){
             debugPrint( "Edits NOT allowed in community - go fuck yourself" )
             WaitSignal( clGlobal.signalDummy, "mqt_signal_newCommunity" )
@@ -173,7 +142,6 @@ void function main(){
 
         debugPrint( "Edits allowed in community :333333333333" )
 
-        // [ "Static", "Marquee", "Full", "Copy", "Clock", "Ping", "Stat", "Position" ]
         string mode = GetConVarString( "cv_mqtv4_activeMode" )
         string preset = GetConVarString( "cv_mqtv4_activePreset" )
         

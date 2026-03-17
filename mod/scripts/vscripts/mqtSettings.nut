@@ -28,12 +28,10 @@ void function main(){
     ModSettings_AddModCategory(	" > General settings" )
 
     ModSettings_AddEnumSetting(	"cv_mqtv4_enabled", "Enabled", boolEnum )
-    //ModSettings_AddEnumSetting( "cv_mqtv4_mode", "Mode", modeEnum )
     ModSettings_AddSetting(	"cv_mqtv4_activePreset", "Active preset", "string" )
 
     // "Hardcoded" network IDs to use later on
     ModSettings_AddSetting(	"cv_mqtv4_networkIDs_owned", "Owned network IDs", "int" )
-    ModSettings_AddSetting(	"cv_mqtv4_networkID_invisible", "Invisible network ID", "int" )
 
     // Does what it says on the tin
     // Does nothing if youre the party leader yourself
@@ -52,8 +50,6 @@ void function main(){
 
     // ==========================================================================================
 
-    // Static
-    // input
     ModSettings_AddModCategory(	" > Static settings" )
     ModSettings_AddSetting(	"cv_mqtv4_static_input", "Input", "string" )
 
@@ -76,10 +72,6 @@ void function main(){
     // ==========================================================================================
 
     // Marquee
-    // input
-    // delay
-    // taglength (auto bitslicelength)
-    // reverse
     ModSettings_AddModCategory(	" > Marquee settings" )
     ModSettings_AddSetting(	"cv_mqtv4_marquee_input", "Input", "string" )
     ModSettings_AddSetting(	"cv_mqtv4_marquee_delay", "Delay", "float" )
@@ -105,10 +97,6 @@ void function main(){
     // ==========================================================================================
 
     // Full
-    // input
-    // delay
-    // taglength (auto bitslicelength)
-    // auto taglength
     ModSettings_AddModCategory(	" > Full settings" )
     ModSettings_AddSetting(	"cv_mqtv4_full_input", "Input", "string" )
     ModSettings_AddSetting(	"cv_mqtv4_full_delay", "Delay", "float" )
@@ -134,7 +122,6 @@ void function main(){
     // ==========================================================================================
 
     // Copy
-    // playername
     ModSettings_AddModCategory(	" > Copy settings" )
     ModSettings_AddSetting(	"cv_mqtv4_copy_playerName", "Player to copy", "string" )
 
@@ -157,7 +144,6 @@ void function main(){
     // ==========================================================================================
 
     // Clock
-    // timezone offset
     ModSettings_AddModCategory(	" > Clock settings" )
     ModSettings_AddEnumSetting( "cv_mqtv4_clock_timezone", "Timezone", timezoneEnum )
 
@@ -180,8 +166,6 @@ void function main(){
     // ==========================================================================================
 
     // Ping
-    // refreshrate
-    // append ms suffix
     ModSettings_AddModCategory(	" > Ping settings" )
     ModSettings_AddSetting(	"cv_mqtv4_ping_refreshrate", "Refreshrate", "float" )
     ModSettings_AddEnumSetting( "cv_mqtv4_ping_useSuffix", "Append ms suffix for ping < 100", boolEnum )
@@ -205,9 +189,6 @@ void function main(){
     // ==========================================================================================
 
     // PGS
-    // playername (defaults to self)
-    // refreshrate
-    // stat
     ModSettings_AddModCategory(	" > Stat settings" )
     ModSettings_AddSetting(	"cv_mqtv4_stat_playerName", "Playername to grab stats from", "string" )
     ModSettings_AddSetting(	"cv_mqtv4_stat_refreshrate", "Refreshrate", "float" )
@@ -232,12 +213,6 @@ void function main(){
     // ==========================================================================================
     
     // Position
-    // top 1 preset or static tag
-    // top 2 "
-    // top 3 "
-    // top 4 "
-    // top 5 "
-    // top 6 "
     ModSettings_AddModCategory(	" > Position settings" )
     ModSettings_AddSetting(	"cv_mqtv4_position_preset_top1", "Top 1 preset name", "string" )
     ModSettings_AddSetting(	"cv_mqtv4_position_preset_top2", "Top 2 preset name", "string" )

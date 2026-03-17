@@ -46,11 +46,6 @@
 			"Flags": 16777216
 		},
 		{
-			"Name": "cv_mqtv4_networkID_invisible",
-			"DefaultValue": "",
-			"Flags": 16777216
-		},
-		{
 			"Name": "cv_mqtv4_syncToPartyLeader",
 			"DefaultValue": "0",
 			"Flags": 16777216
