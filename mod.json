@@ -28,7 +28,7 @@
 		{
 			"Name": "cv_mqtv4_communityEditsAllowed",
 			"DefaultValue": "0",
-			"Flags": 4194320
+			"Flags": 4194304
 		},
 		{
 			"Name": "cv_mqtv4_activePreset",
@@ -41,7 +41,7 @@
 			"Flags": 16777216
 		},
 		{
-			"Name": "cv_mqtv4_networkID_owned",
+			"Name": "cv_mqtv4_networkIDs_owned",
 			"DefaultValue": "",
 			"Flags": 16777216
 		},

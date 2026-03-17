@@ -32,7 +32,7 @@ void function main(){
     ModSettings_AddSetting(	"cv_mqtv4_activePreset", "Active preset", "string" )
 
     // "Hardcoded" network IDs to use later on
-    ModSettings_AddSetting(	"cv_mqtv4_networkID_owned", "Owned network ID", "int" )
+    ModSettings_AddSetting(	"cv_mqtv4_networkIDs_owned", "Owned network IDs", "int" )
     ModSettings_AddSetting(	"cv_mqtv4_networkID_invisible", "Invisible network ID", "int" )
 
     // Does what it says on the tin

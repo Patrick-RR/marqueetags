@@ -1,6 +1,5 @@
 global function mqt_setTag
 global function mqt_signalNewCommunity
-// global function mqt_checkEditPermission
 
 global function InitCommunitiesMenu
 global function InitMyNetworksMenu
@@ -1058,17 +1057,27 @@ void function UICodeCallback_CommunitySaveFailed( int communityId )
 	printt( "communityId " + communityId + " failed to saved successfully" );
 }
 
-// void function mqt_checkEditPermission(){
-// 	try{
-// 		printt( "Sent mqt_signal_editPermissionResponse signal" )
-// 		RunClientScript( "mqt_signalEditPermissionResponse" )
-//     }catch(e){
-//         printt( expect string( e ) )
-//     }
-// }
+void function mqt_setCommunityEditsAllowed(){
+	array<string> allowedNetworkIDs = split( GetConVarString( "cv_mqtv4_networkIDs_owned" ), " " )
+
+	// foreach( string id in allowedNetworkIDs )
+	// 	printt( "ID: " + id )
+
+	bool changesAllowed = (
+		allowedNetworkIDs.contains( GetCurrentCommunityId().tostring() ) && 
+		GetCurrentCommunityMembershipLevel() == "owner"
+	) 
+
+	// printt( "Is allowed network ID: " + allowedNetworkIDs.contains( GetCurrentCommunityId().tostring() ).tostring() )
+	// printt( "Membershiplevel: " + GetCurrentCommunityMembershipLevel() )
+	
+	SetConVarBool( "cv_mqtv4_communityEditsAllowed", changesAllowed )
+
+	// printt( "CHANGES ALLOWED: " + GetConVarBool( "cv_mqtv4_communityEditsAllowed" ).tostring() )
+}
 
 void function mqt_signalNewCommunity(){
-	SetConVarBool( "cv_mqtv4_communityEditsAllowed", GetCurrentCommunityMembershipLevel() != "owner" )
+	mqt_setCommunityEditsAllowed()
 
     try{
         printt( "Sent mqt_signal_newCommunity signal" )
@@ -1077,15 +1086,6 @@ void function mqt_signalNewCommunity(){
         printt( expect string( e ) )
     }
 }
-
-// void function mqt_signalEditsAllowed(){
-// 	try{
-// 		printt( "Sent mqt_signal_editsAllowed signal" )
-// 		RunClientScript( "mqt_signalEditsAllowed" )
-// 	}catch(e){
-// 		printt( expect string( e ) )
-// 	}
-// }
 
 void function mqt_setTag( string tag ){
 	if( GetCurrentCommunityMembershipLevel() == "owner" )
@@ -1636,15 +1636,16 @@ void function MyCommunities_SetActive()
 	printt( "they selected community" + communityId )
 	SetActiveCommunity( communityId )
 
-	mqt_signalNewCommunity()
-
-	// if( GetCurrentCommunityMembershipLevel() == "owner" )
-	// 	mqt_allowEdits()
-
 	// file.inCommunityPanel = false
 	Hud_SetFocused( file.selectNetWorkbutton )
 	EmitUISound( "Menu.Accept" )
 	Community_CommunityUpdated()
+
+	// For some fucking reason the return value of GetCurrentCommunityMembershipLevel() is only updated after a delay 
+	thread function():(){
+		wait 1
+		mqt_signalNewCommunity()
+	}()
 }
 
 bool function BrowseCommunities_ListWasFocused()
