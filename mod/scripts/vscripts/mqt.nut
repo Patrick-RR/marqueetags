@@ -56,7 +56,7 @@ void function modeTable_Init(){
     modeTable[ "marquee" ] <- mode_marquee
     modeTable[ "full" ] <- mode_full
     modeTable[ "copy" ] <- mode_copy
-    modeTable[ "clock" ] <- null
+    modeTable[ "clock" ] <- mode_clock
     modeTable[ "ping" ] <- null
     modeTable[ "stat" ] <- null
     modeTable[ "position" ] <- null
@@ -350,4 +350,38 @@ void function mode_copy( string preset = "" ){
 
         wait 0
     }
+}
+
+void function mode_clock( string preset = "" ){
+    EndSignal( clGlobal.signalDummy, "mqt_signal_newSettings", "mqt_signal_newCommunity" )
+
+    int timezone
+
+    if( preset == "" )
+        timezone = GetConVarInt( "cv_mqtv4_clock_timezone" )
+    else 
+        timezone = expect int( allPresets[ "clock" ][ preset ].timezone ) 
+
+    timezone = int( clamp( timezone, -12, 14 ) )
+
+    table currentTime
+    string tag
+    string oldTag
+
+    for(;;){
+        currentTime = dtool_getCurrentTime( timezone )
+        tag = format( "%02d%02d", currentTime.hour, currentTime.minute ) 
+
+        while( tag == oldTag ){
+            wait 1
+
+            currentTime = dtool_getCurrentTime( timezone )
+            tag = format( "%02d%02d", currentTime.hour, currentTime.minute ) 
+        }
+
+        setTag( tag )
+        oldTag = tag
+
+        wait 0
+    } 
 }
