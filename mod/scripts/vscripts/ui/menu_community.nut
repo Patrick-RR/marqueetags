@@ -1058,13 +1058,13 @@ void function UICodeCallback_CommunitySaveFailed( int communityId )
 }
 
 void function mqt_setCommunityEditsAllowed(){
-	array<string> allowedNetworkIDs = split( GetConVarString( "cv_mqtv4_networkIDs_owned" ), " " )
+	// array<string> allowedNetworkIDs = split( GetConVarString( "cv_mqtv4_networkIDs_owned" ), " " )
 
-	// foreach( string id in allowedNetworkIDs )
-	// 	printt( "ID: " + id )
+	allowedNetworkID = GetConVarString( "cv_mqtv4_networkIDs_owned" )
 
 	bool changesAllowed = (
-		allowedNetworkIDs.contains( GetCurrentCommunityId().tostring() ) && 
+		// allowedNetworkIDs.contains( GetCurrentCommunityId().tostring() ) && 
+		GetCurrentCommunityId().tostring() == allowedNetworkID &&
 		GetCurrentCommunityMembershipLevel() == "owner"
 	) 
 

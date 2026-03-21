@@ -41,9 +41,9 @@
 			"Flags": 16777216
 		},
 		{
-			"Name": "cv_mqtv4_networkIDs_owned",
+			"Name": "cv_mqtv4_networkID_owned",
 			"DefaultValue": "",
-			"Flags": 16777216
+			"Flags": 20971520
 		},
 		{
 			"Name": "cv_mqtv4_syncToPartyLeader",
