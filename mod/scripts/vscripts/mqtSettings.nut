@@ -170,10 +170,10 @@ void function main(){
     ModSettings_AddSetting(	"cv_mqtv4_ping_refreshrate", "Refreshrate", "float" )
     ModSettings_AddEnumSetting( "cv_mqtv4_ping_useSuffix", "Append ms suffix for ping < 100", boolEnum )
 
-    ModSettings_AddButton( "[ Update tag to use current settings ]", void function():(){ setActiveMode( "clock" ) } )
+    ModSettings_AddButton( "[ Update tag to use current settings ]", void function():(){ setActiveMode( "ping" ) } )
 
     ModSettings_AddSetting(	"cv_mqtv4_ping_presetName", "Preset name", "string" )
-    ModSettings_AddButton( "[ Save current settings as preset ]", void function():(){ saveCurrentPresetToFile( "clock" ) } )
+    ModSettings_AddButton( "[ Save current settings as preset ]", void function():(){ saveCurrentPresetToFile( "ping" ) } )
     
     // *ping presets*
     foreach( table preset in ( "ping" in allPresets ? allPresets[ "ping" ] : [] ) ){

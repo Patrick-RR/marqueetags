@@ -57,7 +57,7 @@ void function modeTable_Init(){
     modeTable[ "full" ] <- mode_full
     modeTable[ "copy" ] <- mode_copy
     modeTable[ "clock" ] <- mode_clock
-    modeTable[ "ping" ] <- null
+    modeTable[ "ping" ] <- mode_ping
     modeTable[ "stat" ] <- null
     modeTable[ "position" ] <- null
 }
@@ -362,7 +362,7 @@ void function mode_clock( string preset = "" ){
     else 
         timezone = expect int( allPresets[ "clock" ][ preset ].timezone ) 
 
-    timezone = int( clamp( timezone, -12, 14 ) )
+    timezone -= 12
 
     table currentTime
     string tag
@@ -384,4 +384,34 @@ void function mode_clock( string preset = "" ){
 
         wait 0
     } 
+}
+
+void function mode_ping( string preset = "" ){
+    EndSignal( clGlobal.signalDummy, "mqt_signal_newSettings", "mqt_signal_newCommunity" )
+
+    float refreshrate
+    bool useSuffix
+
+    if( preset == "" ){
+        refreshrate = GetConVarFloat( "cv_mqtv4_ping_refreshrate" )
+        useSuffix = GetConVarBool( "cv_mqtv4_ping_useSuffix" )
+    } else {
+        refreshrate = expect float( allPresets[ "ping" ][ preset ].refreshrate ) 
+        useSuffix = expect bool( allPresets[ "ping" ][ preset ].useSuffix ) 
+    }
+
+    string tag
+    int ping
+
+    for(;;){
+        ping = MyPing()
+        tag = format( "%3i", ping )
+        
+        if( useSuffix && ping < 100 )
+            tag += "ms"
+
+        setTag( tag )
+        
+        wait refreshrate
+    }  
 }
