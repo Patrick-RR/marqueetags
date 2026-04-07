@@ -177,7 +177,7 @@
 		},
 		{
 			"Name": "cv_mqtv4_stat_toTrack",
-			"DefaultValue": "0",
+			"DefaultValue": "",
 			"Flags": 16777216
 		},
 		{

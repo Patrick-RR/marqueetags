@@ -192,7 +192,7 @@ void function main(){
     ModSettings_AddModCategory(	" > Stat settings" )
     ModSettings_AddSetting(	"cv_mqtv4_stat_playerName", "Playername to grab stats from", "string" )
     ModSettings_AddSetting(	"cv_mqtv4_stat_refreshrate", "Refreshrate", "float" )
-    ModSettings_AddEnumSetting(	"cv_mqtv4_stat_toTrack", "Stat to track", statEnum )
+    ModSettings_AddSetting(	"cv_mqtv4_stat_toTrack", "Stat to track", "string" )
     
     ModSettings_AddButton( "[ Update tag to use current settings ]", void function():(){ setActiveMode( "stat" ) } )
 
@@ -333,7 +333,7 @@ table function addPresetEntriesForMode( table preset, string mode ){
         case "stat":
             preset.input <- GetConVarString( "cv_mqtv4_stat_playerName" )
             preset.refreshrate <- GetConVarFloat( "cv_mqtv4_stat_refreshrate" )
-            preset.toTrack <- GetConVarInt( "cv_mqtv4_stat_toTrack" )
+            preset.toTrack <- GetConVarString( "cv_mqtv4_stat_toTrack" )
             break
 
         case "position":

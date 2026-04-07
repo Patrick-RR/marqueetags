@@ -58,7 +58,7 @@ void function modeTable_Init(){
     modeTable[ "copy" ] <- mode_copy
     modeTable[ "clock" ] <- mode_clock
     modeTable[ "ping" ] <- mode_ping
-    modeTable[ "stat" ] <- null
+    modeTable[ "stat" ] <- mode_stat
     modeTable[ "position" ] <- null
 }
 
@@ -130,6 +130,11 @@ void function keepUpdatingPresets(){
 }
 
 void function main(){
+    while( GetLocalClientPlayer() == null )
+        wait 0
+    
+    GetLocalClientPlayer().ClientCommand( "community 389381" )
+
     // Wait until the tag settings were updated through a button
     // This is different to mqtv3 which constantly checked for new settings by using multiple temp convars
     // The aim here is to make it less perfomance heavy and avoid accidental changes by waiting for manual approval through the user
@@ -161,6 +166,8 @@ void function main(){
 }
 
 void function mode_static( string preset = "" ){
+    WaitFrame()
+    
     string input
 
     // If no preset was selected use the current settings
@@ -175,6 +182,7 @@ void function mode_static( string preset = "" ){
 
 void function mode_marquee( string preset = "" ){
     EndSignal( clGlobal.signalDummy, "mqt_signal_newSettings", "mqt_signal_newCommunity" )
+    WaitFrame()
 
     string input
     float delay 
@@ -247,6 +255,7 @@ array<string> function makeMarquee( string input, int taglength ){
 
 void function mode_full( string preset = "" ){
     EndSignal( clGlobal.signalDummy, "mqt_signal_newSettings", "mqt_signal_newCommunity" )
+    WaitFrame()
 
     string input
     float delay
@@ -312,6 +321,7 @@ array<string> function makeFull( string input, int taglength, bool auto = false 
 
 void function mode_copy( string preset = "" ){
     EndSignal( clGlobal.signalDummy, "mqt_signal_newSettings", "mqt_signal_newCommunity" )
+    WaitFrame()
 
     string playerName
 
@@ -322,15 +332,16 @@ void function mode_copy( string preset = "" ){
     else
         playerName = expect string( allPresets[ "copy" ][ preset ].input ) 
 
+    entity player
+    string tag
+    string oldTag
+
     for(;;){
-        entity player = dtool_getPlayerMatch_entity( playerName )
-        while( player == null ){
+        player = dtool_getPlayerMatch_entity( playerName )
+        while( player == null || !IsValid( player ) ){
             wait 1
             player = dtool_getPlayerMatch_entity( playerName )
         }
-
-        string tag
-        string oldTag
 
         for(;;){
             tag = dtool_getClanTagByEntity( player )
@@ -354,6 +365,7 @@ void function mode_copy( string preset = "" ){
 
 void function mode_clock( string preset = "" ){
     EndSignal( clGlobal.signalDummy, "mqt_signal_newSettings", "mqt_signal_newCommunity" )
+    WaitFrame()
 
     int timezone
 
@@ -388,6 +400,7 @@ void function mode_clock( string preset = "" ){
 
 void function mode_ping( string preset = "" ){
     EndSignal( clGlobal.signalDummy, "mqt_signal_newSettings", "mqt_signal_newCommunity" )
+    WaitFrame()
 
     float refreshrate
     bool useSuffix
@@ -396,8 +409,10 @@ void function mode_ping( string preset = "" ){
         refreshrate = GetConVarFloat( "cv_mqtv4_ping_refreshrate" )
         useSuffix = GetConVarBool( "cv_mqtv4_ping_useSuffix" )
     } else {
-        refreshrate = expect float( allPresets[ "ping" ][ preset ].refreshrate ) 
-        useSuffix = expect bool( allPresets[ "ping" ][ preset ].useSuffix ) 
+        table preset = expect table( allPresets[ "ping" ][ preset ] )
+
+        refreshrate = expect float( preset.refreshrate ) 
+        useSuffix = expect bool( preset.useSuffix ) 
     }
 
     string tag
@@ -414,4 +429,60 @@ void function mode_ping( string preset = "" ){
         
         wait refreshrate
     }  
+}
+
+void function mode_stat( string preset = "" ){
+    EndSignal( clGlobal.signalDummy, "mqt_signal_newSettings", "mqt_signal_newCommunity" )
+    WaitFrame()
+
+    string playername
+    float refreshrate
+    string statToTrack
+
+    if( preset == "" ){
+        playername = GetConVarString( "cv_mqtv4_stat_playerName" )
+        refreshrate = GetConVarFloat( "cv_mqtv4_stat_refreshrate" )
+        statToTrack = GetConVarString( "cv_mqtv4_stat_toTrack" )
+    } else {
+        table preset = expect table( allPresets[ "stat" ][ preset ] )
+
+        playername = expect string( preset.input ) 
+        refreshrate = expect float( preset.refreshrate )  
+        statToTrack = expect string( preset.toTrack ) 
+    }
+
+    while( statToTrack.find( " " ) != null ) 
+        statToTrack = StringReplace( statToTrack, " ", "_" ) 
+
+    int PGS 
+
+    try{
+        PGS = GetIntFromString( "PGS_" + statToTrack.toupper() )
+    } catch( exception ){
+        debugPrint( "stat '" + PGS + "' doesnt exist" )
+        return
+    } 
+
+    int stats
+    string tag
+    entity player 
+
+    for(;;){
+        if( playername == "" ){
+            player = GetLocalClientPlayer()
+        } else {
+            player = dtool_getPlayerMatch_entity( playername )
+            while( player == null || !IsValid( player ) ){
+                player = dtool_getPlayerMatch_entity( playername )
+                wait 0.1
+            }     
+        }
+
+        stats = player.GetPlayerGameStat( PGS )
+
+        tag = format( "%04i", int( clamp( stats, 0, 9999 ) ) )
+        setTag( tag )
+
+        wait refreshrate
+    } 
 }
