@@ -591,7 +591,8 @@ void function mode_weapon( string preset = "" ){
     entity player = GetLocalClientPlayer()
     entity lastWeapon = player.GetActiveWeapon()
 
-// Show whatever we're already holding right away instead of waiting for the first switch
+    thread weaponDeathWatcher()
+    
     if( !IsAlive( player ) ){
         thread weaponMarqueeLoop( makeMarquee( "DEAD", taglength ), delay )
     } else if( lastWeapon != null && IsValid( lastWeapon ) ){
@@ -633,6 +634,26 @@ void function mode_weapon( string preset = "" ){
         lastWeapon = weapon
 
         thread weaponMarqueeLoop( makeWeaponTags( weapon, taglength, reverse ), delay )
+    }
+}
+
+void function weaponDeathWatcher(){
+    EndSignal( clGlobal.signalDummy, "mqt_signal_newSettings", "mqt_signal_newCommunity" )
+
+    entity player = GetLocalClientPlayer()
+    bool wasAlive = ( player != null && IsValid( player ) ) ? IsAlive( player ) : true
+
+    for(;;){
+        wait 0.25
+        player = GetLocalClientPlayer()
+        if( player == null || !IsValid( player ) )
+            continue
+
+        bool alive = IsAlive( player )
+        if( alive != wasAlive ){
+            wasAlive = alive
+            mqt_signalNewWeapon( player )
+        }
     }
 }
 
