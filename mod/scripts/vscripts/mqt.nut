@@ -533,7 +533,12 @@ string function getCurrentWeaponName(){
 
 // Resolves a weapon entity to its short, lowercase display name (e.g. "alternator").
 string function getWeaponDisplayName( entity weapon ){
-    return Localize( expect string( weapon.GetWeaponInfoFileKeyField( "shortprintname" ) ) ).tolower()
+    try{
+        return Localize( expect string( weapon.GetWeaponInfoFileKeyField( "shortprintname" ) ) ).tolower()
+    } catch( exception ){
+        debugPrint( "No shortprintname for weapon, falling back to raw name" )
+        return getCurrentWeaponName().tolower()
+    }
 }
 
 // Builds the marquee tag sequence for a given weapon entity.
@@ -591,21 +596,32 @@ void function mode_weapon( string preset = "" ){
         thread weaponMarqueeLoop( makeWeaponTags( lastWeapon, taglength, reverse ), delay )
 
     for(;;){
-        WaitSignal( clGlobal.signalDummy, "mqt_signal_newWeapon" )
+            WaitSignal( clGlobal.signalDummy, "mqt_signal_newWeapon" )
 
-        // OnSelectedWeaponChanged fires the moment a swap STARTS, not once it's
-        // finished - GetActiveWeapon() can still report the outgoing weapon for
-        // a few frames after that. Poll until it actually reflects the new
-        // weapon so we don't end up displaying the previous one.
-        entity weapon = player.GetActiveWeapon()
-        while( weapon == lastWeapon || weapon == null || !IsValid( weapon ) ){
-            wait 0
-            weapon = player.GetActiveWeapon()
+            // OnSelectedWeaponChanged fires the moment a swap STARTS, not once it's
+            // finished - GetActiveWeapon() can still report the outgoing weapon for
+            // a few frames after that. Poll until it actually reflects the new
+            // weapon so we don't end up displaying the previous one.
+            // Also re-fetch the player handle each time - on death/respawn the old
+            // handle can go stale, which previously killed this thread silently.
+            entity weapon
+            for(;;){
+                player = GetLocalClientPlayer()
+                if( player == null || !IsValid( player ) ){
+                    wait 0.1
+                    continue
+                }
+
+                weapon = player.GetActiveWeapon()
+                if( weapon != lastWeapon && weapon != null && IsValid( weapon ) )
+                    break
+
+                wait 0
+            }
+            lastWeapon = weapon
+
+            thread weaponMarqueeLoop( makeWeaponTags( weapon, taglength, reverse ), delay )
         }
-        lastWeapon = weapon
-
-        thread weaponMarqueeLoop( makeWeaponTags( weapon, taglength, reverse ), delay )
-    }
 }
 
 void function weaponMarqueeLoop( array<string> tags, float delay ){
