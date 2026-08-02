@@ -1105,7 +1105,7 @@ void function mqt_setTag_internal( string tag ){
     SaveCommunitySettings( settings )
     ClientCommand( "recheck" )
 
-	printt( format( "Tag set to '%s'", tag ) )
+	//printt( format( "Tag set to '%s'", tag ) )
 }
 
 void function OnSaveCommunityButton_Activate( var button )

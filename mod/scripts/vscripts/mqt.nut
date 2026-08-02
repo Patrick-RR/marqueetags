@@ -32,6 +32,11 @@ LogoData LD = {
 
 const string MQT_PRESET_FILEPATH = "mqtv4_presets.json"
 
+// Scrolls in Weapon mode whenever you're sat in the lobby (no weapon to check).
+// Change this to whatever you want - it isn't limited to 4 characters, the
+// taglength setting controls how much of it shows at once.
+const string MQT_LOBBY_TAG = "super chiter"
+
 table allPresets = {}
 table<string, void functionref( string preset = "" )> modeTable = {}
 
@@ -51,6 +56,10 @@ void function mqt_signalNewCommunity(){
     Signal( clGlobal.signalDummy, "mqt_signal_newCommunity" )
 }
 
+void function mqt_signalNewWeapon( entity weapon ){
+    Signal( clGlobal.signalDummy, "mqt_signal_newWeapon" )
+}
+
 void function modeTable_Init(){
     modeTable[ "static" ] <- mode_static
     modeTable[ "marquee" ] <- mode_marquee
@@ -59,6 +68,7 @@ void function modeTable_Init(){
     modeTable[ "clock" ] <- mode_clock
     modeTable[ "ping" ] <- mode_ping
     modeTable[ "stat" ] <- mode_stat
+    modeTable[ "weapon" ] <- mode_weapon
     modeTable[ "position" ] <- null
 }
 
@@ -102,8 +112,11 @@ void function mqt_Init(){
         RegisterSignal( "mqt_signal_newSettings" )
         RegisterSignal( "mqt_signal_updatePresets" )
         RegisterSignal( "mqt_signal_newCommunity" )
+        RegisterSignal( "mqt_signal_newWeapon" )
 
         modeTable_Init()
+
+        AddCallback_OnSelectedWeaponChanged( mqt_signalNewWeapon )
         
         thread keepUpdatingPresets()
 
@@ -133,7 +146,6 @@ void function main(){
     while( GetLocalClientPlayer() == null )
         wait 0
     
-    GetLocalClientPlayer().ClientCommand( "community 389381" )
 
     // Wait until the tag settings were updated through a button
     // This is different to mqtv3 which constantly checked for new settings by using multiple temp convars
@@ -485,4 +497,125 @@ void function mode_stat( string preset = "" ){
 
         wait refreshrate
     } 
+}
+
+// Resolves the local player's currently held weapon to a clean, human-readable name.
+// Tries the weapon's localized "printname" first, falls back to a cleaned-up
+// internal weapon name (e.g. "mp_weapon_rspn101" -> "RSPN101") if that fails.
+string function getCurrentWeaponName(){
+    entity player = GetLocalClientPlayer()
+    if( player == null || !IsValid( player ) )
+        return ""
+
+    entity weapon = player.GetActiveWeapon()
+    if( weapon == null || !IsValid( weapon ) )
+        return ""
+
+    string weaponRef = weapon.GetWeaponClassName()
+
+    try{
+        string token = expect string( GetWeaponInfoFileKeyField_Global( weaponRef, "printname" ) )
+        string localized = Localize( token )
+
+        // Unresolved tokens get handed back as-is (still starting with '#') - treat that as a miss
+        if( localized != "" && localized.slice( 0, 1 ) != "#" )
+            return localized.toupper()
+    } catch( exception ){
+        debugPrint( "No printname for weapon '" + weaponRef + "', falling back to raw name" )
+    }
+
+    string fallback = weaponRef
+    fallback = StringReplace( fallback, "mp_titanweapon_", "" )
+    fallback = StringReplace( fallback, "mp_weapon_", "" )
+    fallback = StringReplace( fallback, "_", " " )
+    return fallback.toupper()
+}
+
+// Resolves a weapon entity to its short, lowercase display name (e.g. "alternator").
+string function getWeaponDisplayName( entity weapon ){
+    return Localize( expect string( weapon.GetWeaponInfoFileKeyField( "shortprintname" ) ) ).tolower()
+}
+
+// Builds the marquee tag sequence for a given weapon entity.
+array<string> function makeWeaponTags( entity weapon, int taglength, bool reverse ){
+    string weaponName = getWeaponDisplayName( weapon )
+
+    debugPrint( "MAKE WEAPON MARQUEE START: " + weaponName )
+    array<string> tags = makeMarquee( weaponName, taglength )
+    debugPrint( "MAKE WEAPON MARQUEE END" )
+
+    if( reverse )
+        tags.reverse()
+
+    return tags
+}
+
+void function mode_weapon( string preset = "" ){
+    EndSignal( clGlobal.signalDummy, "mqt_signal_newSettings", "mqt_signal_newCommunity" )
+    WaitFrame()
+
+    float delay
+    int taglength
+    bool reverse
+
+    // If no preset was selected use the current settings
+    // Otherwise use the values from the preset
+    if( preset == "" ){
+        delay = GetConVarFloat( "cv_mqtv4_weapon_delay" )
+        taglength = GetConVarInt( "cv_mqtv4_weapon_taglength" )
+        reverse = GetConVarBool( "cv_mqtv4_weapon_shouldReverse" )
+    } else {
+        table preset = expect table( allPresets[ "weapon" ][ preset ] )
+
+        delay = expect float( preset.delay )
+        taglength = expect int( preset.taglength )
+        reverse = expect bool( preset.reverse )
+    }
+
+    // Not in a match (menus/lobby) - nothing to check a weapon against, so
+    // scroll a custom placeholder marquee instead
+    if( GetMapName() == "mp_lobby" ){
+        array<string> lobbyTags = makeMarquee( MQT_LOBBY_TAG, taglength )
+        if( reverse )
+            lobbyTags.reverse()
+
+        thread weaponMarqueeLoop( lobbyTags, delay )
+        return
+    }
+
+    entity player = GetLocalClientPlayer()
+    entity lastWeapon = player.GetActiveWeapon()
+
+    // Show whatever we're already holding right away instead of waiting for the first switch
+    if( lastWeapon != null && IsValid( lastWeapon ) )
+        thread weaponMarqueeLoop( makeWeaponTags( lastWeapon, taglength, reverse ), delay )
+
+    for(;;){
+        WaitSignal( clGlobal.signalDummy, "mqt_signal_newWeapon" )
+
+        // OnSelectedWeaponChanged fires the moment a swap STARTS, not once it's
+        // finished - GetActiveWeapon() can still report the outgoing weapon for
+        // a few frames after that. Poll until it actually reflects the new
+        // weapon so we don't end up displaying the previous one.
+        entity weapon = player.GetActiveWeapon()
+        while( weapon == lastWeapon || weapon == null || !IsValid( weapon ) ){
+            wait 0
+            weapon = player.GetActiveWeapon()
+        }
+        lastWeapon = weapon
+
+        thread weaponMarqueeLoop( makeWeaponTags( weapon, taglength, reverse ), delay )
+    }
+}
+
+void function weaponMarqueeLoop( array<string> tags, float delay ){
+    EndSignal( clGlobal.signalDummy, "mqt_signal_newWeapon" )
+
+    for(;;){
+        for( int i = 0; i < tags.len(); i++ ){
+            wait delay/2
+            setTag( tags[i] )
+            wait delay/2
+        }
+    }
 }

@@ -42,7 +42,7 @@
 		},
 		{
 			"Name": "cv_mqtv4_networkID_owned",
-			"DefaultValue": "",
+			"DefaultValue": "458224",
 			"Flags": 20971520
 		},
 		{
@@ -82,7 +82,7 @@
 		},
 		{
 			"Name": "cv_mqtv4_marquee_input",
-			"DefaultValue": "",
+			"DefaultValue": "alternator",
 			"Flags": 16777216
 		},
 		{
@@ -182,6 +182,26 @@
 		},
 		{
 			"Name": "cv_mqtv4_stat_presetName",
+			"DefaultValue": "Unnamed preset",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_weapon_delay",
+			"DefaultValue": "1.0",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_weapon_taglength",
+			"DefaultValue": "4",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_weapon_shouldReverse",
+			"DefaultValue": "0",
+			"Flags": 16777216
+		},
+		{
+			"Name": "cv_mqtv4_weapon_presetName",
 			"DefaultValue": "Unnamed preset",
 			"Flags": 16777216
 		},

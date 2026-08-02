@@ -4,7 +4,7 @@ global function mqtSettings_Init
 const string MQT_PRESET_FILEPATH = "mqtv4_presets.json"
 
 const array<string> boolEnum = [ "No", "Yes" ]
-const array<string> modeEnum = [ "Static", "Marquee", "Full", "Copy", "Clock", "Ping", "Stat", "Position" ]
+const array<string> modeEnum = [ "Static", "Marquee", "Full", "Copy", "Clock", "Ping", "Stat", "Weapon", "Position" ]
 const array<string> timezoneEnum = [
     "GMT-12", "GMT-11", "GMT-10", "GMT-9", "GMT-8", "GMT-7", "GMT-6",
     "GMT-5", "GMT-4", "GMT-3", "GMT-2", "GMT-1", "GMT", "GMT+1",
@@ -21,8 +21,6 @@ void function mqtSettings_Init(){
     thread main()
 }
 
-// This function is threaded so we can dynamically add presets
-// Loading presets from a json is async meaning we must wait until we actually load content
 void function main(){
     ModSettings_AddModTitle( "^FFFFFF00[MQTv4] Marquee Tags ^7D83FF00v4.0" )
     ModSettings_AddModCategory(	" > General settings" )
@@ -211,6 +209,30 @@ void function main(){
     }
 
     // ==========================================================================================
+
+    // Weapon
+    ModSettings_AddModCategory(	" > Weapon settings" )
+    ModSettings_AddSetting(	"cv_mqtv4_weapon_delay", "Delay", "float" )
+    ModSettings_AddSetting(	"cv_mqtv4_weapon_taglength", "Tag length", "int" )
+    ModSettings_AddEnumSetting( "cv_mqtv4_weapon_shouldReverse", "Reverse", boolEnum )
+
+    ModSettings_AddButton( "[ Update tag to use current settings ]", void function():(){ setActiveMode( "weapon" ) } )
+
+    ModSettings_AddSetting(	"cv_mqtv4_weapon_presetName", "Preset name", "string" )
+    ModSettings_AddButton( "[ Save current settings as preset ]", void function():(){ saveCurrentPresetToFile( "weapon" ) } )
+
+    // *weapon presets*
+    foreach( table preset in ( "weapon" in allPresets ? allPresets[ "weapon" ] : [] ) ){
+        string presetName = expect string( preset[ "presetName" ] )
+        ModSettings_AddButton(
+            format( "[ Load preset '%s' ]", presetName ),
+            void function():( presetName ) {
+                setActivePresetAndMode( "weapon", presetName )
+            }
+        )
+    }
+
+    // ==========================================================================================
     
     // Position
     ModSettings_AddModCategory(	" > Position settings" )
@@ -334,6 +356,12 @@ table function addPresetEntriesForMode( table preset, string mode ){
             preset.input <- GetConVarString( "cv_mqtv4_stat_playerName" )
             preset.refreshrate <- GetConVarFloat( "cv_mqtv4_stat_refreshrate" )
             preset.toTrack <- GetConVarString( "cv_mqtv4_stat_toTrack" )
+            break
+
+        case "weapon":
+            preset.delay <- GetConVarFloat( "cv_mqtv4_weapon_delay" )
+            preset.taglength <- GetConVarInt( "cv_mqtv4_weapon_taglength" )
+            preset.reverse <- GetConVarBool( "cv_mqtv4_weapon_shouldReverse" )
             break
 
         case "position":
