@@ -591,37 +591,49 @@ void function mode_weapon( string preset = "" ){
     entity player = GetLocalClientPlayer()
     entity lastWeapon = player.GetActiveWeapon()
 
-    // Show whatever we're already holding right away instead of waiting for the first switch
-    if( lastWeapon != null && IsValid( lastWeapon ) )
+// Show whatever we're already holding right away instead of waiting for the first switch
+    if( !IsAlive( player ) ){
+        thread weaponMarqueeLoop( makeMarquee( "DEAD", taglength ), delay )
+    } else if( lastWeapon != null && IsValid( lastWeapon ) ){
         thread weaponMarqueeLoop( makeWeaponTags( lastWeapon, taglength, reverse ), delay )
+    }
 
     for(;;){
-            WaitSignal( clGlobal.signalDummy, "mqt_signal_newWeapon" )
+        WaitSignal( clGlobal.signalDummy, "mqt_signal_newWeapon" )
 
-            // OnSelectedWeaponChanged fires the moment a swap STARTS, not once it's
-            // finished - GetActiveWeapon() can still report the outgoing weapon for
-            // a few frames after that. Poll until it actually reflects the new
-            // weapon so we don't end up displaying the previous one.
-            // Also re-fetch the player handle each time - on death/respawn the old
-            // handle can go stale, which previously killed this thread silently.
-            entity weapon
-            for(;;){
-                player = GetLocalClientPlayer()
-                if( player == null || !IsValid( player ) ){
-                    wait 0.1
-                    continue
-                }
-
-                weapon = player.GetActiveWeapon()
-                if( weapon != lastWeapon && weapon != null && IsValid( weapon ) )
-                    break
-
-                wait 0
-            }
-            lastWeapon = weapon
-
-            thread weaponMarqueeLoop( makeWeaponTags( weapon, taglength, reverse ), delay )
+        player = GetLocalClientPlayer()
+        if( player == null || !IsValid( player ) ){
+            wait 0.1
+            continue
         }
+
+        // Dead - show DEAD instead of spinning on GetActiveWeapon() forever
+        if( !IsAlive( player ) ){
+            thread weaponMarqueeLoop( makeMarquee( "DEAD", taglength ), delay )
+            lastWeapon = null
+            continue
+        }
+
+        // Alive - wait for GetActiveWeapon() to actually reflect the new
+        // weapon, same reasoning as before, but bail out if we die again
+        // mid-wait instead of spinning past that.
+        entity weapon
+        for(;;){
+            weapon = player.GetActiveWeapon()
+            if( weapon != lastWeapon && weapon != null && IsValid( weapon ) )
+                break
+            if( !IsAlive( player ) )
+                break
+            wait 0
+        }
+
+        if( weapon == null || !IsValid( weapon ) )
+            continue // died again before a weapon showed up - next signal will catch it
+
+        lastWeapon = weapon
+
+        thread weaponMarqueeLoop( makeWeaponTags( weapon, taglength, reverse ), delay )
+    }
 }
 
 void function weaponMarqueeLoop( array<string> tags, float delay ){
