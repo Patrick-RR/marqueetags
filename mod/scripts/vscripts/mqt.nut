@@ -589,73 +589,75 @@ void function mode_weapon( string preset = "" ){
     }
 
     entity player = GetLocalClientPlayer()
-    entity lastWeapon = player.GetActiveWeapon()
+        entity lastWeapon = null
 
-    thread weaponDeathWatcher()
-    
-    if( !IsAlive( player ) ){
-        thread weaponMarqueeLoop( makeMarquee( "DEAD", taglength ), delay )
-    } else if( lastWeapon != null && IsValid( lastWeapon ) ){
-        thread weaponMarqueeLoop( makeWeaponTags( lastWeapon, taglength, reverse ), delay )
-    }
-
-    for(;;){
-        WaitSignal( clGlobal.signalDummy, "mqt_signal_newWeapon" )
-
-        player = GetLocalClientPlayer()
-        if( player == null || !IsValid( player ) ){
-            wait 0.1
-            continue
+        if( player != null && IsValid( player ) ){
+            if( !IsAlive( player ) ){
+                thread weaponMarqueeLoop( makeMarquee( "DEAD", taglength ), delay )
+            } else {
+                try{
+                    lastWeapon = player.GetActiveWeapon()
+                } catch( exception ){
+                    lastWeapon = null
+                }
+                if( lastWeapon != null && IsValid( lastWeapon ) )
+                    thread weaponMarqueeLoop( makeWeaponTags( lastWeapon, taglength, reverse ), delay )
+            }
         }
 
-        // Dead - show DEAD instead of spinning on GetActiveWeapon() forever
-        if( !IsAlive( player ) ){
-            thread weaponMarqueeLoop( makeMarquee( "DEAD", taglength ), delay )
-            lastWeapon = null
-            continue
-        }
-
-        // Alive - wait for GetActiveWeapon() to actually reflect the new
-        // weapon, same reasoning as before, but bail out if we die again
-        // mid-wait instead of spinning past that.
-        entity weapon
         for(;;){
-            weapon = player.GetActiveWeapon()
-            if( weapon != lastWeapon && weapon != null && IsValid( weapon ) )
-                break
-            if( !IsAlive( player ) )
-                break
-            wait 0
+            WaitSignal( clGlobal.signalDummy, "mqt_signal_newWeapon" )
+
+            player = GetLocalClientPlayer()
+            if( player == null || !IsValid( player ) ){
+                wait 0.1
+                continue
+            }
+
+            if( !IsAlive( player ) ){
+                thread weaponMarqueeLoop( makeMarquee( "DEAD", taglength ), delay )
+                lastWeapon = null
+                continue
+            }
+
+            entity weapon
+            bool gotWeapon = false
+
+            for(;;){
+                // Re-fetch and re-check EVERY pass - during respawn spam the
+                // player entity can go invalid between two adjacent lines,
+                // and calling a native method on it throws a hard error that
+                // otherwise kills this entire thread permanently.
+                player = GetLocalClientPlayer()
+                if( player == null || !IsValid( player ) )
+                    break
+
+                if( !IsAlive( player ) )
+                    break
+
+                try{
+                    weapon = player.GetActiveWeapon()
+                } catch( exception ){
+                    debugPrint( "GetActiveWeapon threw - player went invalid mid-poll, recovering" )
+                    break
+                }
+
+                if( weapon != lastWeapon && weapon != null && IsValid( weapon ) ){
+                    gotWeapon = true
+                    break
+                }
+
+                wait 0
+            }
+
+            if( !gotWeapon )
+                continue // died again or player vanished mid-poll - next signal re-evaluates cleanly
+
+            lastWeapon = weapon
+
+            thread weaponMarqueeLoop( makeWeaponTags( weapon, taglength, reverse ), delay )
         }
-
-        if( weapon == null || !IsValid( weapon ) )
-            continue // died again before a weapon showed up - next signal will catch it
-
-        lastWeapon = weapon
-
-        thread weaponMarqueeLoop( makeWeaponTags( weapon, taglength, reverse ), delay )
     }
-}
-
-void function weaponDeathWatcher(){
-    EndSignal( clGlobal.signalDummy, "mqt_signal_newSettings", "mqt_signal_newCommunity" )
-
-    entity player = GetLocalClientPlayer()
-    bool wasAlive = ( player != null && IsValid( player ) ) ? IsAlive( player ) : true
-
-    for(;;){
-        wait 0.25
-        player = GetLocalClientPlayer()
-        if( player == null || !IsValid( player ) )
-            continue
-
-        bool alive = IsAlive( player )
-        if( alive != wasAlive ){
-            wasAlive = alive
-            mqt_signalNewWeapon( player )
-        }
-    }
-}
 
 void function weaponMarqueeLoop( array<string> tags, float delay ){
     EndSignal( clGlobal.signalDummy, "mqt_signal_newWeapon" )
