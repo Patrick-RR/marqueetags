@@ -31,10 +31,6 @@ LogoData LD = {
 #endif
 
 const string MQT_PRESET_FILEPATH = "mqtv4_presets.json"
-
-// Scrolls in Weapon mode whenever you're sat in the lobby (no weapon to check).
-// Change this to whatever you want - it isn't limited to 4 characters, the
-// taglength setting controls how much of it shows at once.
 const string MQT_LOBBY_TAG = "super chiter"
 
 table allPresets = {}
